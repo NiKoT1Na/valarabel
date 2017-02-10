@@ -1,0 +1,136 @@
+body{
+
+	font-family: 'Amatic SC', cursive;
+	font-size: 2em;
+	background-color: #eeeeee;
+}
+
+.navbar {
+	background-color: #093D42;
+	font-size: 25px;
+	color: white;
+	text-align: right;
+	padding: 5px;
+	// border-radius: 15px;
+}
+
+a:link {
+
+	color: #CBDCDD;
+}
+
+a:visited {
+
+	color: #CBDCDD;
+}
+
+
+
+#subcontainer {
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: justify;
+	margin-left: 10em;
+	margin-right: 10em;
+	flex: 2 4 20%;
+	margin-bottom: 2em;
+	flex-wrap: wrap;
+}
+
+.title{
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: justify;
+	margin-left: 7em;
+	margin-right: 15em;
+	flex: 2 4 20%;
+	margin-bottom: .2em;
+	font-size: 2em;
+	font-weight: bold;
+}
+
+#editpage {
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: justify;
+	margin-left: 15em;
+	margin-right: 45em;
+	flex: 2 4 20%;
+	margin-bottom: 2em;
+}
+
+#oneprod {
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: justify;
+	margin-left: 25em;
+	margin-right: 25em;
+	flex: 2 4 20%;
+	margin-bottom: 2em;
+}
+
+.titulo-bonito{
+
+margin: .5em;
+font-weight: bold;
+
+}
+
+
+.product {
+	font-size: 0.8em;
+	border-color: black;
+	max-width: 10em;
+	max-height: 10em;
+	min-height: 10em;
+	min-width: 10em;
+	margin: 1em;
+	margin-bottom: 5em;
+	border-color: blue;
+}
+
+.product div a {
+
+	display: block;
+	color: black;
+	text-decoration: none;
+
+}
+
+.right_menu {
+
+	display: block;
+	margin-left: 5em;
+}
+
+.single-error {
+	color: red;
+	font-weight: bold;
+	font-size: 0.8em;
+}
+
+.prod_imagen img {
+
+	max-width: 200px;
+	max-height: 200px;
+}
+
+.prod_imagen_grande img {
+
+	max-width: 600px;
+	max-height: 600px;
+}
+
+.small_text {
+
+	font-size: 0.75em;
+}
+
+.tag {
+	font-size: .75em;
+	color: red;
+}
