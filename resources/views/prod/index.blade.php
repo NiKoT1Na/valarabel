@@ -31,12 +31,12 @@
 			</div>	
 			
 			<div class="tag">
-
+{{-- 
 				@foreach($tags as $tag)
 					@if($tag->prod_id = $post->id)
-					{!!$tag->tag_id." _ ".$tag->TAG_NAME."<br>"!!}
+					{!!$tag->tag_id." _ ".$tag->name."<br>"!!}
 					@endif
-				@endforeach
+				@endforeach --}}
  			</div>	
 			
 			<div class="inv">

@@ -5,11 +5,7 @@
 {{-- @if (!isset($id))
 	{{ $fill = ["", "", "", "", "", ""]}}
 @endif
- --}}
-
-
-
-	
+ --}}	
 		<div class="title">
 			sube tu producto
 		</div>
@@ -24,7 +20,7 @@
 
 				@include('partials.form_group', ['column'=>'file', 'type' => 'file', 'label' => 'IMAGEN DE TU PRODUCTO'])
 
-			    <div class="form-group">
+				<div class="form-group">
 					{!! Form::label('categories', 'CATEGORIA') !!}
 					{!! Form::select('categories', $category_array) !!}
 					@if ($errors->has('categories'))
@@ -40,7 +36,7 @@
 
 				@include('partials.form_group', ['column'=> 'price', 'type' => 'number', 'label' => 'PRECIO'])
 
-			    @include('partials.form_group', ['column'=> 'inv', 'type' => 'number', 'label' => 'INVENTARIO'])
+				@include('partials.form_group', ['column'=> 'inv', 'type' => 'number', 'label' => 'INVENTARIO'])
 
 				<div>
 					{!! Form::submit('Subir') !!}

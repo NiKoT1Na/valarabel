@@ -11,7 +11,7 @@ class Prod extends Model {
 
 	public function tags() {
 
-		return $this->belongsToMany('App\Tag', 'prod_tags', 'prod_id', 'tag_id');
+		return $this->belongsToMany('App\Tag', 'prod_tag', 'prod_id', 'tag_id');
 	}
 
 }

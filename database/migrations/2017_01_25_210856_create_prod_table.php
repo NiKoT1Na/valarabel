@@ -21,10 +21,9 @@ class CreateProdTable extends Migration
             $table->string('file', 255);
             $table->longtext('details');
             $table->integer('price');
-            $table->integer('prod_class', 255);
-            // $table->string('prod_tags', 255);
+            $table->integer('category_id');
             $table->integer('inv');
-            $table->timestamps('fecha');
+            $table->timestamps();
 
         });
         //artisan migrate

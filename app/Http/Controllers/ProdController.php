@@ -40,13 +40,13 @@ class ProdController extends Controller
 		//$content = DB::table('prod')->get();
 
 		$content = Prod::all();
-		$tags = DB::table('prod')->leftJoin('prod_tags', 'prod_id', '=', 'id')->leftJoin('tags', 'tag_id', '=', 'tags.ID')->where('prod_tags.prod_id', '=', 'prod.id')
-		->get();
+		// $tags = DB::table('prod')->leftJoin('prod_tags', 'prod_id', '=', 'id')->leftJoin('tags', 'tag_id', '=', 'tags.ID')->where('prod_tags.prod_id', '=', 'prod.id')
+		// ->get();
 		// ->select('prod.name', 'prod.id', 'tags.ID')
 		// where('prod_id', '=', 'prod_tags')
 		// $category = DB::table('categories')->leftJoin('prod_categories');
 
-		return view('prod.index', ['content' => $content, 'tags' => $tags]);
+		return view('prod.index', ['content' => $content]);
 	}
 
 	/**
@@ -62,11 +62,10 @@ class ProdController extends Controller
 		$category_array = [];
 	
 		foreach ($categories as $category) {
-			$id = $category['ID'];
+			$id = $category['id'];
 			$category_array[$id] = $category['name'];       	
 		}
-
-		return view('prod.create', ['category_array' => $category_array]);
+		 return view('prod.create', ['category_array' => $category_array]);
 	}
 
 	// github (git) -> codigo
@@ -100,24 +99,29 @@ class ProdController extends Controller
 		$prod->details = Request::get('details');
 		$prod->price = Request::get('price');
 		$prod->inv = Request::get('inv');
+		$prod->category_id = Request::get('categories');
 		$prod->save();
 		$imageName = $prod->id . '_' . time() . '_' . $prod->user_id . '.' . $request->file('file')->getClientOriginalExtension();
 		Request::file('file')->move(base_path() . '/public/images/catalog', $imageName);
         $prod->file = $imageName ;
-        $prod->save();
+        $tag_array = explode(",", Request::get('tags'));
+        
+        foreach ($tag_array as $tag_name) {
 
-        $tag = new Tag();
-        $tag->TAG_NAME = Request::get('tags');
-        $tag->save();
+        	$tag_name = trim($tag_name);
+        	$tag_name = strtolower($tag_name);
+        	$tag_name = ucfirst($tag_name);
+
+	        $tag = new Tag();       	
+	        $tag->name = $tag_name;
+	        $tag->save();
+	        $prod->tags()->attach($tag->id);
+        }
 
         // $category = new Category();
         // $category->
 
-        $prod_id = $prod->id;
-        $tag_id = $tag->id;
-
-		$prod = Prod::find($prod_id);
-		$prod->tags()->attach($tag_id);
+		$prod->save();
 
 
 		 // Request::all();

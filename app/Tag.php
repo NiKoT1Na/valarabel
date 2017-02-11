@@ -6,8 +6,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model {
-	protected $table = 'tags';
-	protected $fillable = ['TAG_NAME'];
+	protected $table = 'tag';
+	protected $fillable = ['name'];
 
 		public function Prods() {
 		return $this->belongsToMany('app\Prod');
