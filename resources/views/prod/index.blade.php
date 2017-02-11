@@ -31,6 +31,7 @@
 			</div>	
 			
 			<div class="tag">
+			<!-- no me mire el codigo, maricon-->
 {{-- 
 				@foreach($tags as $tag)
 					@if($tag->prod_id = $post->id)

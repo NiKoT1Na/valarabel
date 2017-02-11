@@ -34,18 +34,7 @@ class ProdController extends Controller
 	 */
 	public function index()
 	{
-		// index
-		// /productos
-		// la lista completa de productos paginada
-		//$content = DB::table('prod')->get();
-
 		$content = Prod::all();
-		// $tags = DB::table('prod')->leftJoin('prod_tags', 'prod_id', '=', 'id')->leftJoin('tags', 'tag_id', '=', 'tags.ID')->where('prod_tags.prod_id', '=', 'prod.id')
-		// ->get();
-		// ->select('prod.name', 'prod.id', 'tags.ID')
-		// where('prod_id', '=', 'prod_tags')
-		// $category = DB::table('categories')->leftJoin('prod_categories');
-
 		return view('prod.index', ['content' => $content]);
 	}
 
@@ -56,20 +45,9 @@ class ProdController extends Controller
 	 */
 	public function create($id = null)
 	{
-		// vista del formulario para crear un producto
-		$categories = Category::all();
-
-		$category_array = [];
-	
-		foreach ($categories as $category) {
-			$id = $category['id'];
-			$category_array[$id] = $category['name'];       	
-		}
-		 return view('prod.create', ['category_array' => $category_array]);
+		$category_array = Category::all()->pluck('id', 'name');
+		return view('prod.create', ['category_array' => $category_array]);
 	}
-
-	// github (git) -> codigo
-	// codigo =/ data {esquema, squeme}
 
 	/**
 	 * Store a newly created resource in storage.
@@ -85,52 +63,37 @@ class ProdController extends Controller
 		    'price' => 'required|numeric',
 		    'inv' => 'required|numeric',
 		    'tags' => 'required',
+		    'categories' => 'exists:categories,id'
 		], [
 			'required' => 'Este campo es obligatorio!',
 			'numeric' => 'Este campo tiene que ser numerico'
 		]);
 
 		// dd($request);
-		$prod = new Prod();
-		$prod->user_id = 1;
-		$prod->name = Request::get('name');
-		//json_decode($prod->file);
-		$prod->file = "";
-		$prod->details = Request::get('details');
-		$prod->price = Request::get('price');
-		$prod->inv = Request::get('inv');
-		$prod->category_id = Request::get('categories');
+		$prod = new Prod([
+			'user_id' => 1,
+			'name' => Request::get('name'),
+			'file' => '',
+			'details' => Request::get('details'),
+			'price' => Request::get('price'),
+			'inv' => Request::get('inv'),
+			'category_id' => Request::get('category_id')
+		]);
+
 		$prod->save();
-		$imageName = $prod->id . '_' . time() . '_' . $prod->user_id . '.' . $request->file('file')->getClientOriginalExtension();
+		$ext = $request->file('file')->getClientOriginalExtension();
+		$imageName = $prod->id . '_' . time() . '_' . $prod->user_id . '.' . $ext;
 		Request::file('file')->move(base_path() . '/public/images/catalog', $imageName);
-        $prod->file = $imageName ;
+        $prod->file = $imageName;
         $tag_array = explode(",", Request::get('tags'));
         
         foreach ($tag_array as $tag_name) {
-
-        	$tag_name = trim($tag_name);
-        	$tag_name = strtolower($tag_name);
-        	$tag_name = ucfirst($tag_name);
-
-	        $tag = new Tag();       	
-	        $tag->name = $tag_name;
-	        $tag->save();
+        	$tag_name = ucfirst(strtolower(trim($tag_name)));
+	        $tag = Tag::firstOrCreate(['name' => $tag_name]);
 	        $prod->tags()->attach($tag->id);
         }
 
-        // $category = new Category();
-        // $category->
-
 		$prod->save();
-
-
-		 // Request::all();
-		 // save();
-		// ["name" => "required|min:32|max:100"]
-		// validacion para un nuevo producto (procedente de productos.create)
-		// guarda en la db
-		// la vista con el mensjae de exito, o devolverse con los errors (view("sdf")->withErrors($array))
-		// products/1231
 
 		return redirect()->route('products.show', ['id' => $prod->id])->with('status', 'Exito creando!');
 
