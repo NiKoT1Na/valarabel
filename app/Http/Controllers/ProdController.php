@@ -33,9 +33,45 @@ class ProdController extends Controller
 	 * @return Response
 	 */
 	public function index()
-	{
-		$content = Prod::all();
-		return view('prod.index', ['content' => $content]);
+	{	
+		$content = Prod::with('tags', 'category');
+		return view('prod.index', ['content' => $content->get()]);
+	}
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function showbytag($tag_id = null)
+	{	
+		// exit($tag_id);
+		DB::enableQueryLog();
+		// $content = Tag::whereIn('id', [$tag_id,12])->with('prods')->get();
+		$content = Prod::where('id', '>', 0)->with('withTag')->get();
+		// foreach ($content as $m) {
+		// 	$content = $m->prods;
+		// }
+		// $content = (new Prod())->withTag()->newQuery()->get(['*']);
+		// $content = Prod::with(['tags' => function ($query)
+		// {
+		// 	$query->where('id', 23)
+		// }])->get();
+		echo "<pre>";
+		dd(DB::getQueryLog());
+				exit();
+		return view('prod.index', ['content' => $content->get()]);
+	}
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function showbycategory($category_id = null)
+	{	
+		$content = Prod::with('tags', 'category')->where('category_id', '=', $category_id);
+		return view('prod.index', ['content' => $content->get()]);
 	}
 
 	/**
@@ -45,7 +81,7 @@ class ProdController extends Controller
 	 */
 	public function create($id = null)
 	{
-		$category_array = Category::all()->pluck('id', 'name');
+		$category_array = Category::all()->pluck('name', 'id');
 		return view('prod.create', ['category_array' => $category_array]);
 	}
 
@@ -56,6 +92,7 @@ class ProdController extends Controller
 	 */
 	public function store(\Illuminate\Http\Request $request, $id = null)
 	{
+
 		$this->validate($request, [
 		    'name' => 'required',
 		    'file' => 'required|image',
@@ -63,11 +100,12 @@ class ProdController extends Controller
 		    'price' => 'required|numeric',
 		    'inv' => 'required|numeric',
 		    'tags' => 'required',
-		    'categories' => 'exists:categories,id'
+		    'category_id' => 'exists:categories,id'
 		], [
 			'required' => 'Este campo es obligatorio!',
 			'numeric' => 'Este campo tiene que ser numerico'
 		]);
+
 
 		// dd($request);
 		$prod = new Prod([
@@ -79,6 +117,7 @@ class ProdController extends Controller
 			'inv' => Request::get('inv'),
 			'category_id' => Request::get('category_id')
 		]);
+
 
 		$prod->save();
 		$ext = $request->file('file')->getClientOriginalExtension();

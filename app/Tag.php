@@ -9,8 +9,8 @@ class Tag extends Model {
 	protected $table = 'tag';
 	protected $fillable = ['name'];
 
-		public function Prods() {
-		return $this->belongsToMany('app\Prod');
+	public function prods() {
+		return $this->belongsToMany('App\Prod');
 	}
 
 }

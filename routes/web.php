@@ -21,7 +21,9 @@ Route::get('/', function () {
 
 Route::resource('products', 'ProdController');
 
+Route::get('tag/{id}', 'ProdController@showbytag');
 
+Route::get('category/{id}', 'ProdController@showbycategory');
 
 // Route::get('valerie', 'ProdController@index');
 

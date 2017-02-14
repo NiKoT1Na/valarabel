@@ -28,14 +28,23 @@ a:visited {
 
 #subcontainer {
 
-	display: inline-flex;
-	align-items: center;
-	justify-content: justify;
-	margin-left: 10em;
-	margin-right: 10em;
-	flex: 2 4 20%;
-	margin-bottom: 2em;
-	flex-wrap: wrap;
+display: flex;
+
+/* align-items: center; */
+
+justify-content: space-between;
+
+margin-left: 5em;
+
+margin-right: 5em;
+
+flex: 2 4 20%;
+
+margin-bottom: 3em;
+
+flex-wrap: wrap;
+
+/* background: red; */
 }
 
 .title{
@@ -67,33 +76,31 @@ a:visited {
 	display: inline-flex;
 	align-items: center;
 	justify-content: justify;
-	margin-left: 25em;
-	margin-right: 25em;
+	margin-left: 15em;
+	margin-right: 10em;
 	flex: 2 4 20%;
 	margin-bottom: 2em;
 }
 
 .titulo-bonito{
 
-margin: .5em;
-font-weight: bold;
+margin: .5em 0;
 
+font-weight: bold;
 }
 
 
 .product {
 	font-size: 0.8em;
 	border-color: black;
-	max-width: 10em;
-	max-height: 10em;
-	min-height: 10em;
-	min-width: 10em;
+	max-width: 7em;
+	min-height: 7em;
+	min-width: 7em;
 	margin: 1em;
-	margin-bottom: 5em;
-	border-color: blue;
+	text-align: justify;
 }
 
-.product div a {
+.product .titulo-bonito a {
 
 	display: block;
 	color: black;
@@ -115,14 +122,15 @@ font-weight: bold;
 
 .prod_imagen img {
 
-	max-width: 200px;
-	max-height: 200px;
+	max-width: 100%;
+
+/* max-height: 5em; */
 }
 
 .prod_imagen_grande img {
 
-	max-width: 600px;
-	max-height: 600px;
+	max-width: 15em;
+	max-height: 15em;
 }
 
 .small_text {
@@ -131,6 +139,48 @@ font-weight: bold;
 }
 
 .tag {
-	font-size: .75em;
-	color: red;
+	font-size: .85em;
+}
+.tag a {
+	color: #043935;
+	text-decoration: none;
+	font-weight: bold;
+
+}
+
+.category a  {
+	color: #043935;
+	text-decoration: none;
+	font-weight: bold;
+
+}
+
+.prod_imagen {
+    max-height: 170px;
+    overflow: hidden;
+    margin: 0.5em 0;
+}
+
+.text {
+    height: 3em;
+    /* vertical-align: middle; */
+    line-height: 1em;
+    position: relative;
+    text-overflow: ellipsis;
+    /* white-space: pre-line; */
+    /* overflow: hidden; */
+}
+
+
+.product:empty {
+	height: 0;
+	border: none;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+	min-height: 0;
+}
+
+.tag:last-of-type .comma {
+	display: none;
 }

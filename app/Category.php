@@ -10,7 +10,7 @@ class Category extends Model {
 	protected $fillable = ['name'];
 	
 	public function Prods() {
-		return $this->hasmany('app\Prod');
+		return $this->hasMany('App\Prod');
 	}
 
 }

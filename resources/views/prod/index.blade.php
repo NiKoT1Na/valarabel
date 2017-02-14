@@ -15,39 +15,42 @@
 			</div>
 
 			<div class="text">
+				<h1>Detalles</h1>
 				{{$post->details}}								
 			</div>	
 
 			<div class="price">
-				{{$post->price}}		
+				Precio
+				${{$post->price}}		
 			</div>	
 
 			<div class="prod_imagen">
-				<img src="{{ url("images/catalog/$post->file")}}" alt="">
+				<img src="{{ url("images/catalog/$post->file") }}" alt="">
 			</div>
 			
-			<div class="type">
-				
-			</div>	
-			
-			<div class="tag">
-			<!-- no me mire el codigo, maricon-->
-{{-- 
-				@foreach($tags as $tag)
-					@if($tag->prod_id = $post->id)
-					{!!$tag->tag_id." _ ".$tag->name."<br>"!!}
-					@endif
-				@endforeach --}}
- 			</div>	
+			@include('partials.categories')			
+
+			<div class="tags">@include('partials.tags_links')
+			</div>
 			
 			<div class="inv">
+				cantidad disponible
 				{{$post->inv}}
+				unidades
 			</div>	
 			
 			<div class="date">
+				Creado
 				{{$post->created_at}}
 			</div>
 		</div>
-	@endforeach		
-</disv>
+	@endforeach
+	@for($i=0;$i<10;$i++)
+
+		<div class="product">
+			{{-- This is a fix, for the flex justify space-between issue
+			it can be found here http://codepen.io/dalgard/pen/Dbnus --}}
+		</div>	
+	@endfor 		
+</div>
 @endsection

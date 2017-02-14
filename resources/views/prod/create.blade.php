@@ -21,11 +21,11 @@
 				@include('partials.form_group', ['column'=>'file', 'type' => 'file', 'label' => 'IMAGEN DE TU PRODUCTO'])
 
 				<div class="form-group">
-					{!! Form::label('categories', 'CATEGORIA') !!}
-					{!! Form::select('categories', $category_array) !!}
-					@if ($errors->has('categories'))
+					{!! Form::label('category_id', 'CATEGORIA') !!}
+					{!! Form::select('category_id', $category_array) !!}
+					@if ($errors->has('category_id'))
 						<div class="single-error">
-						{{ $errors->first('categories') }}
+						{{ $errors->first('category_id') }}
 						</div>
 					@endif	
 				</div>
