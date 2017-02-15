@@ -20,10 +20,10 @@ class Prod extends Model {
 	}
 
 
-	public function withTag() {
+	// public function withTag() {
 
-		return $this->belongsToMany('App\Tag')->whereIn('prod_tag.tag_id', [9]);
-	}
+	// 	return $this->belongsToMany('App\Tag')->whereIn('prod_tag.tag_id', [9]);
+	// }
 
 
 }

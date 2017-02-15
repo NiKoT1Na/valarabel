@@ -40,9 +40,7 @@ class CreateProdTable extends Migration
      */
     public function down()
     {
-        Schema::table('prod', function (Blueprint $table) {
-            //
-        });
+       Schema::dropIfExists('prod');
         // seeds datos de mentiras para llenar las tablas 
         //  
 

@@ -32,6 +32,7 @@ class ProdController extends Controller
 	 *
 	 * @return Response
 	 */
+
 	public function index()
 	{	
 		$content = Prod::with('tags', 'category');
@@ -45,22 +46,12 @@ class ProdController extends Controller
 	 */
 	public function showbytag($tag_id = null)
 	{	
-		// exit($tag_id);
-		DB::enableQueryLog();
-		// $content = Tag::whereIn('id', [$tag_id,12])->with('prods')->get();
-		$content = Prod::where('id', '>', 0)->with('withTag')->get();
-		// foreach ($content as $m) {
-		// 	$content = $m->prods;
-		// }
-		// $content = (new Prod())->withTag()->newQuery()->get(['*']);
-		// $content = Prod::with(['tags' => function ($query)
-		// {
-		// 	$query->where('id', 23)
-		// }])->get();
-		echo "<pre>";
-		dd(DB::getQueryLog());
-				exit();
-		return view('prod.index', ['content' => $content->get()]);
+		$find = Tag::find($tag_id);	
+		if ($find === null) {
+			abort(404, 'el tag seleccionado no existe');
+		}
+		$content = $find->prods;
+		return view('prod.index', ['content' => $content]);
 	}
 
 	/**
@@ -70,6 +61,9 @@ class ProdController extends Controller
 	 */
 	public function showbycategory($category_id = null)
 	{	
+		if (Category::find($category_id) === null) {
+			abort(404, 'la categoria seleccionada, no existe');
+		}
 		$content = Prod::with('tags', 'category')->where('category_id', '=', $category_id);
 		return view('prod.index', ['content' => $content->get()]);
 	}
@@ -82,7 +76,12 @@ class ProdController extends Controller
 	public function create($id = null)
 	{
 		$category_array = Category::all()->pluck('name', 'id');
-		return view('prod.create', ['category_array' => $category_array]);
+		$arguments = ['category_array' => $category_array];
+		if ( $id !== null ) {
+			$prod = Prod::find($id);
+			$arguments['prod'] = $prod;
+		}
+		return view('prod.create', $arguments);
 	}
 
 	/**
@@ -92,23 +91,18 @@ class ProdController extends Controller
 	 */
 	public function store(\Illuminate\Http\Request $request, $id = null)
 	{
+		$model = Prod::findOrNew($id);
 
-		$this->validate($request, [
+		$rules = [
 		    'name' => 'required',
 		    'file' => 'required|image',
 		    'details' => 'required',
 		    'price' => 'required|numeric',
 		    'inv' => 'required|numeric',
 		    'tags' => 'required',
-		    'category_id' => 'exists:categories,id'
-		], [
-			'required' => 'Este campo es obligatorio!',
-			'numeric' => 'Este campo tiene que ser numerico'
-		]);
-
-
-		// dd($request);
-		$prod = new Prod([
+		    'category_id' => 'exists:categories,id'	   
+		];
+		$prod = [
 			'user_id' => 1,
 			'name' => Request::get('name'),
 			'file' => '',
@@ -116,25 +110,38 @@ class ProdController extends Controller
 			'price' => Request::get('price'),
 			'inv' => Request::get('inv'),
 			'category_id' => Request::get('category_id')
+		];
+		if ($id !== null && !$request->hasFile('file')) {
+			unset($rules['file']);
+			unset($prod['file']);
+		}
+		$this->validate($request, $rules, [
+			'required' => 'Este campo es obligatorio!',
+			'numeric' => 'Este campo tiene que ser numerico'
 		]);
 
-
-		$prod->save();
-		$ext = $request->file('file')->getClientOriginalExtension();
-		$imageName = $prod->id . '_' . time() . '_' . $prod->user_id . '.' . $ext;
-		Request::file('file')->move(base_path() . '/public/images/catalog', $imageName);
-        $prod->file = $imageName;
+		$model->fill($prod);
+		$model->save();
+		if ($request->hasFile('file')) {
+			if ($model->file) {
+				unlink(base_path() . '/public/images/catalog/' . $model->file);
+			}
+			$ext = $request->file('file')->getClientOriginalExtension();
+			$imageName = $model->id . '_' . time() . '_' . $model->user_id . '.' . $ext;
+			Request::file('file')->move(base_path() . '/public/images/catalog', $imageName);
+	        $model->file = $imageName;
+        }
         $tag_array = explode(",", Request::get('tags'));
         
         foreach ($tag_array as $tag_name) {
         	$tag_name = ucfirst(strtolower(trim($tag_name)));
 	        $tag = Tag::firstOrCreate(['name' => $tag_name]);
-	        $prod->tags()->attach($tag->id);
+	        $model->tags()->attach($tag->id);
         }
 
-		$prod->save();
+		$model->save();
 
-		return redirect()->route('products.show', ['id' => $prod->id])->with('status', 'Exito creando!');
+		return redirect()->route('products.show', ['id' => $model->id])->with('status', 'Exito creando!');
 
 	}
 
@@ -173,11 +180,11 @@ class ProdController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(\Illuminate\Http\Request $request, $id)
 	{
 		// va la validacion de update $_POST
 		// Request::
-		return $this->store($id);
+		return $this->store($request, $id);
 	}
 
 	/**

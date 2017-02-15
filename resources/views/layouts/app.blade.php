@@ -21,9 +21,14 @@
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
         ]) !!};
-    </script>
+    </script>    
 </head>
 <body>
+    <div class="errors">
+        
+    </div>
+
+
     <div id="app">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">

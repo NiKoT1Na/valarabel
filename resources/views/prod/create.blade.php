@@ -12,7 +12,13 @@
 
 
 		<div id="editpage">
-			{!! Form::open(['route' => 'products.store', 'method', 'files' => true]) !!}
+			@if (isset($prod))
+				{!! Form::model($prod, ['route' => ['products.update', $prod->id ], 'method' => 'PUT', 'files' => true]) !!}
+				{{ $prod->tags = implode(', ', $prod->tags->pluck('name')->all()) }}
+
+			@else
+				{!! Form::open(['route' => 'products.store', 'method', 'files' => true]) !!}
+			@endif
 				
 				@include('partials.form_group', ['column'=> 'name', 'type' => 'text', 'label' => 'NOMBRE DEL PRODUCTO'])
 
@@ -29,7 +35,6 @@
 						</div>
 					@endif	
 				</div>
-
 				@include('partials.form_group', ['column'=> 'tags', 'type' => 'text', 'label' => 'ETIQUETAS'])
 
 				<div class="small_text">Separadas por comas ","</div>

@@ -5,6 +5,8 @@
 <div class="title">
 	productos 
 </div>
+
+
 <div id="subcontainer">
 	
 	@foreach($content as $post)
