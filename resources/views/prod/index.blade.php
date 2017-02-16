@@ -2,9 +2,14 @@
 
 @section('content')
 
-<div class="title">
-	productos 
+<div class="img-header">
+	<a href="{{ url('/products/') }}"> <img src="{{URL::asset('/images/body/TITLE.png')}}" alt=""> </a>
 </div>
+
+
+{{-- <div class="title">
+	productos 
+</div> --}}
 
 
 <div id="subcontainer">

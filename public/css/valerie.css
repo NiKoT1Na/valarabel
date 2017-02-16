@@ -1,7 +1,7 @@
 body{
 
-	font-family: 'Amatic SC', cursive;
-	font-size: 2em;
+	/*font-family: 'Amatic SC', cursive;*/
+	font-family: 'Economica', sans-serif;	font-size: 2em;
 	background-color: #eeeeee;
 }
 
@@ -9,9 +9,17 @@ body{
 	background-color: #093D42;
 	font-size: 25px;
 	color: white;
-	text-align: right;
+	text-align: center;
 	padding: 5px;
 	/* border-radius: 15px; */
+}
+
+.navbar div {
+	display: inline;
+}
+
+.left_menu_bar {
+	text-align: right;
 }
 
 a:link {
@@ -196,3 +204,4 @@ font-weight: bold;
 .form-group input {
 	min-height: 2em;
 }
+
