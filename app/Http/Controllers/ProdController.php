@@ -192,8 +192,11 @@ class ProdController extends Controller
 	 */
 	public function destroy($id)
 	{
-		// donde veriva que si se puede borrar y lo borrar, 
-		// devuelve un mensaje diciendo si se pudo borrar o no
+		$post_to_delete = Prod::find($id);
+		unlink(base_path() . '/public/images/catalog/'.$post_to_delete->file);
+		$post_to_delete->delete();
+
+		return redirect()->route('products.index')->with('status', 'Borrado con Exito!!');
 	}
 	// CRUD
 	// Create, Read, Update, Delete

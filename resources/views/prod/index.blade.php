@@ -46,6 +46,15 @@
 				{{$post->created_at}}
 			</div>
 
+			<div class="btn-delete">
+				{!! Form::open(['method' => 'Get', 'route' => ['products.edit', $post->id]]) !!}
+    				<button type="submit">Editar</button>
+				{!! Form::close() !!}
+				{!! Form::open(['method' => 'Delete', 'route' => ['products.destroy', $post->id]]) !!}
+    				<button type="submit">Borrar</button>
+				{!! Form::close() !!}
+			</div>
+
 		</div>
 	@endforeach
 	@for($i=0;$i<10;$i++)
