@@ -11,7 +11,7 @@ body{
 	color: white;
 	text-align: right;
 	padding: 5px;
-	// border-radius: 15px;
+	/* border-radius: 15px; */
 }
 
 a:link {
@@ -73,11 +73,11 @@ flex-wrap: wrap;
 
 #oneprod {
 
-	display: inline-flex;
+	display: block;
 	align-items: center;
 	justify-content: justify;
-	margin-left: 15em;
-	margin-right: 10em;
+	margin-left: 7em;
+	margin-right: 7em;
 	flex: 2 4 20%;
 	margin-bottom: 2em;
 }
@@ -183,4 +183,16 @@ font-weight: bold;
 
 .tag:last-of-type .comma {
 	display: none;
+}
+
+.new_review {
+	display: block;
+}
+
+.form-group label {
+	display: block;
+}
+
+.form-group input {
+	min-height: 2em;
 }

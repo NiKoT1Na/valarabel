@@ -25,6 +25,8 @@ Route::get('tag/{id}', 'ProdController@showbytag');
 
 Route::get('category/{id}', 'ProdController@showbycategory');
 
+Route::post('reviews/{post_id}', 'ReviewController@new_review');
+
 // Route::get('valerie', 'ProdController@index');
 
 // Auth::routes();

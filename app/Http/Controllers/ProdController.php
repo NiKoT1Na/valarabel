@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use App\Prod;
 use App\Category;
 use App\Tag;
+use App\Review;
 
 class ProdController extends Controller
  {
@@ -153,13 +154,9 @@ class ProdController extends Controller
 	 */
 	public function show($id)
 	{
-		// intentar coger el post con ese id de la db
-		// y si falla retornar 404 view(404)
-		// y si view("productos.show")->with('product' => $producto) // productos/show.blade.php
-
-		$post = DB::table('prod')->find($id);
-
-		return view('prod.show', ['post' => $post]);
+		$reviews = Review::all();
+		$post = Prod::with('tags', 'category')->find($id);
+		return view('prod.show', ['post' => $post, 'reviews' => $reviews]);
 	}
 
 	/**
