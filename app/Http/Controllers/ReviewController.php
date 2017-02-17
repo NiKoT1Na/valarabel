@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use App\Prod;
 use App\Review;
@@ -20,20 +21,23 @@ class ReviewController extends Controller
 	   abort(404, "");
 	}
 
-	public function new_review(\Illuminate\Http\Request $request, $post_id)
+	public function new_review(\Illuminate\Http\Request $request, $prod_id)
 	{
-		$fill = [
-			'user_id' => 1,
-			'post_id' => $post_id,
-			'name' => Request::get('name'),
-			'details' => Request::get('details'),
-			'rating' => Request::get('rating'),
-		];
+		if (Auth::check()) {
+			$fill = [
+				'user_id' => 1,
+				'prod_id' => $prod_id,
+				'name' => Request::get('name'),
+				'details' => Request::get('details'),
+				'rating' => Request::get('rating'),
+			];
 
-		$review = new Review($fill);
-		$review->save();
+			$review = new Review($fill);
+			$review->save();
 
-		return back()->with('status', 'creado!');
+			return back()->with('status', 'creado!');
+		}
+		abort(404, 'Debes estar logeado, para hacer una reseña');
 		
 	}
 

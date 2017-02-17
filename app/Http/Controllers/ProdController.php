@@ -19,6 +19,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+// use Illuminate\Auth\Middleware\Authenticate;
 
 use App\Prod;
 use App\Category;
@@ -76,13 +78,16 @@ class ProdController extends Controller
 	 */
 	public function create($id = null)
 	{
-		$category_array = Category::all()->pluck('name', 'id');
-		$arguments = ['category_array' => $category_array];
-		if ( $id !== null ) {
-			$prod = Prod::find($id);
-			$arguments['prod'] = $prod;
+		if (Auth::check()) {
+			$category_array = Category::all()->pluck('name', 'id');
+			$arguments = ['category_array' => $category_array];
+			if ( $id !== null ) {
+				$prod = Prod::find($id);
+				$arguments['prod'] = $prod;
+			}
+			return view('prod.create', $arguments);
 		}
-		return view('prod.create', $arguments);
+		abort(404, 'Debes estar logeado, para subir tus productos');
 	}
 
 	/**
@@ -92,58 +97,60 @@ class ProdController extends Controller
 	 */
 	public function store(\Illuminate\Http\Request $request, $id = null)
 	{
-		$model = Prod::findOrNew($id);
+		if (Auth::check()) {
+			$model = Prod::findOrNew($id);
 
-		$rules = [
-		    'name' => 'required',
-		    'file' => 'required|image',
-		    'details' => 'required',
-		    'price' => 'required|numeric',
-		    'inv' => 'required|numeric',
-		    'tags' => 'required',
-		    'category_id' => 'exists:categories,id'	   
-		];
-		$prod = [
-			'user_id' => 1,
-			'name' => Request::get('name'),
-			'file' => '',
-			'details' => Request::get('details'),
-			'price' => Request::get('price'),
-			'inv' => Request::get('inv'),
-			'category_id' => Request::get('category_id')
-		];
-		if ($id !== null && !$request->hasFile('file')) {
-			unset($rules['file']);
-			unset($prod['file']);
-		}
-		$this->validate($request, $rules, [
-			'required' => 'Este campo es obligatorio!',
-			'numeric' => 'Este campo tiene que ser numerico'
-		]);
-
-		$model->fill($prod);
-		$model->save();
-		if ($request->hasFile('file')) {
-			if ($model->file) {
-				unlink(base_path() . '/public/images/catalog/' . $model->file);
+			$rules = [
+			    'name' => 'required',
+			    'file' => 'required|image',
+			    'details' => 'required',
+			    'price' => 'required|numeric',
+			    'inv' => 'required|numeric',
+			    'tags' => 'required',
+			    'category_id' => 'exists:categories,id'	   
+			];
+			$prod = [
+				'user_id' => 1,
+				'name' => Request::get('name'),
+				'file' => '',
+				'details' => Request::get('details'),
+				'price' => Request::get('price'),
+				'inv' => Request::get('inv'),
+				'category_id' => Request::get('category_id')
+			];
+			if ($id !== null && !$request->hasFile('file')) {
+				unset($rules['file']);
+				unset($prod['file']);
 			}
-			$ext = $request->file('file')->getClientOriginalExtension();
-			$imageName = $model->id . '_' . time() . '_' . $model->user_id . '.' . $ext;
-			Request::file('file')->move(base_path() . '/public/images/catalog', $imageName);
-	        $model->file = $imageName;
-        }
-        $tag_array = explode(",", Request::get('tags'));
-        
-        foreach ($tag_array as $tag_name) {
-        	$tag_name = ucfirst(strtolower(trim($tag_name)));
-	        $tag = Tag::firstOrCreate(['name' => $tag_name]);
-	        $model->tags()->attach($tag->id);
-        }
+			$this->validate($request, $rules, [
+				'required' => 'Este campo es obligatorio!',
+				'numeric' => 'Este campo tiene que ser numerico'
+			]);
 
-		$model->save();
+			$model->fill($prod);
+			$model->save();
+			if ($request->hasFile('file')) {
+				if ($model->file) {
+					unlink(base_path() . '/public/images/catalog/' . $model->file);
+				}
+				$ext = $request->file('file')->getClientOriginalExtension();
+				$imageName = $model->id . '_' . time() . '_' . $model->user_id . '.' . $ext;
+				Request::file('file')->move(base_path() . '/public/images/catalog', $imageName);
+		        $model->file = $imageName;
+	        }
+	        $tag_array = explode(",", Request::get('tags'));
+	        
+	        foreach ($tag_array as $tag_name) {
+	        	$tag_name = ucfirst(strtolower(trim($tag_name)));
+		        $tag = Tag::firstOrCreate(['name' => $tag_name]);
+		        $model->tags()->attach($tag->id);
+	        }
 
-		return redirect()->route('products.show', ['id' => $model->id])->with('status', 'Exito creando!');
+			$model->save();
 
+			return redirect()->route('products.show', ['id' => $model->id])->with('status', 'Exito creando!');
+		}
+		abort(404, 'Debes estar logeado, para subir tus productos');
 	}
 
 	/**
@@ -154,9 +161,18 @@ class ProdController extends Controller
 	 */
 	public function show($id)
 	{
-		$reviews = Review::all();
+		$prod_with_reviews = Prod::with('reviews')->find($id);
+		$rating = $prod_with_reviews->reviews->avg('rating');
+		$reviews = $prod_with_reviews->reviews;
+		
+		function star($rating) {
+			$num = floor($rating * 2);
+			$file_name = $num . 'est.png';
+			return "/body/$file_name";
+		}
+		$star = star($rating);
 		$post = Prod::with('tags', 'category')->find($id);
-		return view('prod.show', ['post' => $post, 'reviews' => $reviews]);
+		return view('prod.show', ['post' => $post, 'reviews' => $reviews, 'rating' => $rating, 'star' => $star]);
 	}
 
 	/**
@@ -167,8 +183,10 @@ class ProdController extends Controller
 	 */
 	public function edit($id)
 	{
-		// va el formulario de edicion
-		return $this->create($id);
+		if (Auth::check()) {
+			return $this->create($id);
+		}
+		abort(404, 'Debes estar logeado, para editar tus productos');
 	}
 
 	/**
@@ -181,7 +199,11 @@ class ProdController extends Controller
 	{
 		// va la validacion de update $_POST
 		// Request::
-		return $this->store($request, $id);
+		if (Auth::check()) {
+
+			return $this->store($request, $id);			
+		}
+		abort(404, 'Debes estar logeado, para editar tus productos');
 	}
 
 	/**

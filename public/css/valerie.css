@@ -205,3 +205,22 @@ font-weight: bold;
 	min-height: 2em;
 }
 
+.score {
+	/*display: inline-block;*/
+/*	text-align: right;
+	margin-right: 5em;*/
+	size: 3em;
+}
+
+.review-title {
+	margin: 1em;
+}
+
+.small-text {
+	font-size: .5em;
+}
+
+.score img {
+	max-width: 5em;
+
+}

@@ -2,30 +2,34 @@
 
 @section('content')
 
-<div class="title">
-	productos <br>
-</div>
+
 @if (session('status'))
 	<div class="alert alert-success">
 		{{ session('status') }}
 	</div>
 @endif
-<div id="oneprod">
-	
+<div class="title">
 	<div class="name titulo-bonito">
 		{{$post->name}}
 	</div>
+</div>
+<div id="oneprod">
+	@if ($rating)
+		<div class="score">
+			Puntuacíon
+			{{$rating}}
+			<img src="{{URL::asset($star)}}" alt="">
+		</div>
+	@endif
 
-	<div class="file">
-		{{$post->file}}				
-	</div>			
 	
+
 	<div class="text">
 		{{$post->details}}										
 	</div>
 
 	<div class="price">
-		{{$post->price}}				
+		Precio {{'$'.$post->price}}				
 	</div>
 
 	<div class="prod_imagen_grande">
@@ -37,26 +41,33 @@
 	<div class="tags">@include('partials.tags_links')
 	</div>
 	<div class="inv">
-		{{$post->inv}}			
+		Cant. {{$post->inv}}			
 	</div>		
 	
 	<div class="date">
-		{{$post->created_at}}					
+		Creado : {{ $post->created_at}}					
 	</div>
-	@include('partials.review_form')
+	@if(Auth::check())
+		@include('partials.review_form')
+	@endif
 	
 	<div class="show_reviews">
 		<div class="review-title">Reseñas</div>
-		@foreach ($reviews as $review)
-			<div class="one_review">
-				titulo
-				<div class="review-name">{{$review->name}}</div>
-				<div class="review-details">{{$review->details}}</div>
-				<div class="review-autor">{{$review->user_id}}</div>
-			</div>	
-		@endforeach
+		@if (count($reviews) > 0)
+			@foreach ($reviews as $review)
+				<div class="one_review">
+					titulo
+					<div class="review-name">{{$review['name']}}</div>
+					<div class="review-details">{{$review['details']}}</div>
+					<div class="review-autor">{{$review['user_id']}}</div>
+				</div>
+			@endforeach
+		@else 
+			<div class="small-text">No hay Reseñas para este producto.</div>
+		@endif	
 	</div>
 
 </div>
+
 
 @endsection

@@ -15,9 +15,11 @@
 //     return view('welcome');
 // });
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::Auth();
 
 Route::resource('products', 'ProdController');
 
@@ -25,7 +27,7 @@ Route::get('tag/{id}', 'ProdController@showbytag');
 
 Route::get('category/{id}', 'ProdController@showbycategory');
 
-Route::post('reviews/{post_id}', 'ReviewController@new_review');
+Route::post('reviews/{prod_id}', 'ReviewController@new_review');
 
 // Route::get('valerie', 'ProdController@index');
 
