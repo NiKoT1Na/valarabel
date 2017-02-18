@@ -20,12 +20,14 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 // use Illuminate\Auth\Middleware\Authenticate;
 
 use App\Prod;
 use App\Category;
 use App\Tag;
 use App\Review;
+
 
 class ProdController extends Controller
  {
@@ -38,8 +40,14 @@ class ProdController extends Controller
 
 	public function index()
 	{	
-		$content = Prod::with('tags', 'category');
-		return view('prod.index', ['content' => $content->get()]);
+		$content = Prod::with('tags', 'category')->get();
+		
+		if (Gate::allows('view', null)) {
+    // The current user can update the post...
+			echo '<h1> ACA ESTA SIRVIENDO EN TEORIA MARGE, ASI COM EL COMUNISMO <h1>';
+			exit();
+		}
+			return view('prod.index', ['content' => $content]);
 	}
 
 	/**

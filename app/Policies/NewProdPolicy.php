@@ -6,7 +6,7 @@ use App\User;
 use App\Prod;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserIsAdmin
+class NewProdPolicy
 {
     use HandlesAuthorization;
 
@@ -19,7 +19,8 @@ class UserIsAdmin
      */
     public function view(User $user, Prod $prod)
     {
-        //
+        exit('XXXX');
+        return true;
     }
 
     /**

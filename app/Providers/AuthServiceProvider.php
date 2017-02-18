@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Prod;
+use App\Policies\ProdPolicy;
+use App\Policies\NewProdPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        Prod::class => NewProdPolicy::class,
     ];
 
     /**
@@ -23,6 +26,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+         // UserIsAdmin::foo();
+        // exit();
+        // $bar = class_exists('ProdPolicy');
+        // echo "<pre>";
+        // var_dump($bar);
+        // exit();
         $this->registerPolicies();
 
         //
