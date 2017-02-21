@@ -42,9 +42,9 @@ display: flex;
 
 justify-content: space-between;
 
-margin-left: 5em;
+/*margin-left: 5em;
 
-margin-right: 5em;
+margin-right: 5em;*/
 
 flex: 2 4 20%;
 
@@ -220,7 +220,23 @@ font-weight: bold;
 	font-size: .5em;
 }
 
+.lil-title {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
 .score img {
 	max-width: 5em;
+
+}
+
+.columns {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+.tag_filter {
+	max-width: 200px;
 
 }

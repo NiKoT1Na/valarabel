@@ -42,10 +42,11 @@ class ProdController extends Controller
 	public function index()
 	{	
 		$content = Prod::with('tags', 'category')->get();
+		$tags = Tag::all();
 		
     // The current user can update the post...
 		
-			return view('prod.index', ['content' => $content]);
+			return view('prod.index', ['content' => $content, 'tags' => $tags]);
 	}
 
 	/**
@@ -53,7 +54,7 @@ class ProdController extends Controller
 	 *
 	 * @return Response
 	 */
-	public function showbytag($tag_id = null)
+	public function tags($tag_id = null)
 	{	
 		$find = Tag::find($tag_id);	
 		if ($find === null) {
@@ -63,18 +64,58 @@ class ProdController extends Controller
 		return view('prod.index', ['content' => $content]);
 	}
 
-	public function filter($tag = null, $category = null) {
-		$tag_id = Request::route('tag');
-		$category_id = Request::route('category');
-		if ($tag_id) {
-			$query = Tag::find($tag_id)->prods();
-			if ($category_id) {
-				$query = $query->where('category_id', '=', $category_id);
-			}
-		} else if ($category_id) {
-			$query = Prod::where('category_id', '=', $category_id);
+	public function filter() {
+		$tags = Request::route('tag');
+		if (empty($tags)) {
+			$tags = Request::get('tag');
 		}
-		return view('prod.index', ['content' => $query->with('tags', 'category')->get()]);
+		if ($tags && !is_array($tags)) {
+			$tags = [$tags];
+		}
+		
+		$category_id = Request::route('category');
+		if (empty($category_id)) {
+			$category_id = Request::get('category_id');
+		}
+
+		if ($tags) {
+			$result = Tag::whereIn('id', $tags)->get();
+			$result = $result->map(function ($tag, $key){
+				return $tag->prods()->with('tags', 'category')->get();
+			})->flatten(1)->unique('id');
+
+
+			// // map (...)
+			// $result = [];
+			// foreach ($result as $key => $tag) {
+			// 	$result[$key] = $tag->prods;
+			// }
+			// // flatten(1)
+			// $result_2 = [];
+			// foreach ($result as $key => $r) {
+			// 	if (is_array($r)) {
+			// 		$result_2 = array_merge($result_2, $r);
+			// 	} else {
+			// 		array_push($result_2, $r);
+			// 	}
+			// }
+			// // unique('id')
+			// $result_3 = [];
+			// $ids = [];
+			// foreach ($result as $key => $r) {
+			// 	if (!$ids[$r['id']]) {
+			// 		array_push($result_3, $r);
+			// 	}
+			// }
+
+			if ($category_id) {
+				$result = $result->where('category_id', $category_id);
+			}
+
+		} else if ($category_id) {
+			$result = Prod::where('category_id', '=', $category_id)->with('tags', 'category')->get();
+		}
+		return view('prod.index', ['content' => $result, 'tags' => Tag::all()]);
 	}
 
 	/**
