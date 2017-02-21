@@ -56,7 +56,10 @@
 					<span class="center_menu">
 						<a href="{{ url('/products/') }}">INDEX</a>            
 
-						<a href="{{ url('/products/create') }}">SUBIR</a>            
+						@if (isAdmin()) 
+							<a href="{{ url('/products/create') }}">SUBIR</a>
+							<a href="{{ url('/dashboard/'.Auth::user()->id)}}">DASHBOARD</a>
+						@endif
 					</span>
 
 				   {{--  <ul class="nav navbar-nav">

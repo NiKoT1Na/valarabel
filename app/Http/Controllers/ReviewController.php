@@ -21,7 +21,7 @@ class ReviewController extends Controller
 	   abort(404, "");
 	}
 
-	public function new_review(\Illuminate\Http\Request $request, $prod_id)
+	public function newreview(\Illuminate\Http\Request $request, $prod_id)
 	{
 		if (Auth::check()) {
 			$fill = [

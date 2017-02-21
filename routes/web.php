@@ -11,34 +11,15 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 Route::Auth();
 
 Route::resource('products', 'ProdController');
 
-Route::get('tag/{id}', 'ProdController@showbytag');
+Route::get('tag/{tag}', ['uses' => 'ProdController@filter', 'as' => 'tag']);
 
-Route::get('category/{id}', 'ProdController@showbycategory');
+Route::get('category/{category}', ['uses' => 'ProdController@filter', 'as' => 'category']);
 
-Route::post('reviews/{prod_id}', 'ReviewController@new_review');
+Route::get('tag/{tag}/category/{category}', ['uses' => 'ProdController@filter', 'as' => 'filter']);
 
-// Route::get('valerie', 'ProdController@index');
+Route::post('reviews/{prod_id}', 'ReviewController@newreview');
 
-// Auth::routes();
-
-// Route::get('/home', 'HomeController@index');
-
-// //index
-// // Route::resource('/prod', 'ProdController');
-
-// Route::get('/vale', function() {
-
-// 	echo "sisas parce";
-// });

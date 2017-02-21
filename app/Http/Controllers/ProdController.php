@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 // use Illuminate\Auth\Middleware\Authenticate;
 
 use App\Prod;
@@ -42,11 +43,8 @@ class ProdController extends Controller
 	{	
 		$content = Prod::with('tags', 'category')->get();
 		
-		if (Gate::allows('view', null)) {
     // The current user can update the post...
-			echo '<h1> ACA ESTA SIRVIENDO EN TEORIA MARGE, ASI COM EL COMUNISMO <h1>';
-			exit();
-		}
+		
 			return view('prod.index', ['content' => $content]);
 	}
 
@@ -65,18 +63,18 @@ class ProdController extends Controller
 		return view('prod.index', ['content' => $content]);
 	}
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function showbycategory($category_id = null)
-	{	
-		if (Category::find($category_id) === null) {
-			abort(404, 'la categoria seleccionada, no existe');
+	public function filter($tag = null, $category = null) {
+		$tag_id = Request::route('tag');
+		$category_id = Request::route('category');
+		if ($tag_id) {
+			$query = Tag::find($tag_id)->prods();
+			if ($category_id) {
+				$query = $query->where('category_id', '=', $category_id);
+			}
+		} else if ($category_id) {
+			$query = Prod::where('category_id', '=', $category_id);
 		}
-		$content = Prod::with('tags', 'category')->where('category_id', '=', $category_id);
-		return view('prod.index', ['content' => $content->get()]);
+		return view('prod.index', ['content' => $query->with('tags', 'category')->get()]);
 	}
 
 	/**
@@ -86,7 +84,9 @@ class ProdController extends Controller
 	 */
 	public function create($id = null)
 	{
-		if (Auth::check()) {
+		
+
+		if (isAdmin()) {
 			$category_array = Category::all()->pluck('name', 'id');
 			$arguments = ['category_array' => $category_array];
 			if ( $id !== null ) {
@@ -95,7 +95,7 @@ class ProdController extends Controller
 			}
 			return view('prod.create', $arguments);
 		}
-		abort(404, 'Debes estar logeado, para subir tus productos');
+		abort(404, 'Debes estar logeado y ser administrador para subir tus productos');
 	}
 
 	/**
@@ -105,7 +105,7 @@ class ProdController extends Controller
 	 */
 	public function store(\Illuminate\Http\Request $request, $id = null)
 	{
-		if (Auth::check()) {
+		if (isAdmin()) {
 			$model = Prod::findOrNew($id);
 
 			$rules = [
@@ -191,7 +191,7 @@ class ProdController extends Controller
 	 */
 	public function edit($id)
 	{
-		if (Auth::check()) {
+		if (isAdmin()) {
 			return $this->create($id);
 		}
 		abort(404, 'Debes estar logeado, para editar tus productos');
@@ -207,7 +207,7 @@ class ProdController extends Controller
 	{
 		// va la validacion de update $_POST
 		// Request::
-		if (Auth::check()) {
+		if (isAdmin()) {
 
 			return $this->store($request, $id);			
 		}
@@ -222,11 +222,13 @@ class ProdController extends Controller
 	 */
 	public function destroy($id)
 	{
-		$post_to_delete = Prod::find($id);
-		unlink(base_path() . '/public/images/catalog/'.$post_to_delete->file);
-		$post_to_delete->delete();
+		if (isAdmin()) {
+			$post_to_delete = Prod::find($id);
+			unlink(base_path() . '/public/images/catalog/'.$post_to_delete->file);
+			$post_to_delete->delete();
 
-		return redirect()->route('products.index')->with('status', 'Borrado con Exito!!');
+			return redirect()->route('products.index')->with('status', 'Borrado con Exito!!');
+		}
 	}
 	// CRUD
 	// Create, Read, Update, Delete

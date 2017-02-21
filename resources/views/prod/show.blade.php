@@ -22,6 +22,16 @@
 		</div>
 	@endif
 
+	@if(isAdmin())
+		<span class="btn-delete">
+			{!! Form::open(['method' => 'Get', 'route' => ['products.edit', $post->id]]) !!}
+				<button type="submit">Editar</button>
+			{!! Form::close() !!}
+			{!! Form::open(['method' => 'Delete', 'route' => ['products.destroy', $post->id]]) !!}
+				<button type="submit">Borrar</button>
+			{!! Form::close() !!}
+		</span>
+	@endif
 	
 
 	<div class="text">

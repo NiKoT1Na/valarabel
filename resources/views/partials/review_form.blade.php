@@ -1,6 +1,6 @@
 <div class="titulo-bonito">Danos tu mejor reseña</div>
 
-{!! Form::open(['action' => ['ReviewController@new_review', $post->id], 'class' => 'new_review']) !!}
+{!! Form::open(['action' => ['ReviewController@newreview', $post->id], 'class' => 'new_review']) !!}
 
 	<div class="form-group">
 		{!! Form::label('name', 'Titulo de la reseña') !!}
