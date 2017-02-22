@@ -2,16 +2,16 @@
 
 /*
 
-pagina de vistas con 4 productos x fila
-ver cada product con 4 fotos
-fotos clickeables pa q se agranden
-parecido a http://www.tous.com/
+tabla ventas id aleatorio.
+columna con el Id de los productos que se compraron quemada
+cuanto costo en el momento
+(un codigo = id para hacer la consignacion a la cuenta. para la venta precio anyway)
+carrito de compras, checkout, codigo de compras cuenta bancaria quemada.
 
-formulaio nuevo producto. medio cuco
-y si algo editar xD!!!
-pre-llenado-
-	(populado)
-	hidden -> ID 
+direccion a donde va a llegar
+telefono
+
+
 
 */
 

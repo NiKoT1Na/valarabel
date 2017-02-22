@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Roles extends Migration
+class CreateProdTagTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class Roles extends Migration
      */
     public function up()
     {
-         Schema::table('users', function (Blueprint $table) {
-            $table->enum('roles', ['admin', 'user']);
-        
+        Schema::create('prod_tag', function (Blueprint $table) {
+            $table->string('prod_id', 255);
+            $table->string('tag_id', 255);
         });
     }
 
@@ -26,8 +26,6 @@ class Roles extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('roles');
-        });
+        Schema::dropIfExists('prod_tag');
     }
 }

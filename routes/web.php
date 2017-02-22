@@ -29,3 +29,7 @@ Route::get('dashboard/{id}', 'DashController@administrate');
 
 Route::get('tags', 'ProdController@tags');
 
+Route::get('carrito', 'CarritoController@compras');
+
+Route::post('added_product', ['uses' => 'CarritoController@addShop', 'as' => 'shopping_cart']);
+

@@ -269,3 +269,11 @@ a.side-links {
 a.side-links.current {
 	color: #999;
 }
+.cart img {
+	max-width: 45px;
+	max-height: 45px;
+}
+.cart {
+	display: flex;
+	flex-direction: column;
+}

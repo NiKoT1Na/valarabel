@@ -39,7 +39,11 @@
 				<div class="price">
 					Precio
 					${{$post->price}}		
-				</div>	
+				</div>
+
+				@if (Auth::user())
+					@include('partials.cart')
+				@endif	
 	
 				<div class="prod_imagen">
 					<img src="{{ url("images/catalog/$post->file") }}" alt="">
@@ -60,6 +64,7 @@
 					Creado
 					{{$post->created_at}}
 				</div>
+
 	
 	
 			</div>
