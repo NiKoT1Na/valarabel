@@ -3,8 +3,10 @@
 @section('content')
 
 <div>
-	
-	CArrito MADAFACKAS
+	@foreach ($content as $post)	
+		{{$post->name}}
+		
+	@endforeach
 </div>
 
 @endsection

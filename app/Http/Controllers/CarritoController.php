@@ -10,28 +10,35 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Input;
 
+use App\Prod;
+use App\Category;
+use App\Tag;
+use App\Review;
+
 class CarritoController extends Controller
 {
     public function compras() {
+    	$allItems = Request::session()->get('cart', []);
+    	$content = Prod::with('tags', 'category')->findMany($allItems);
+    	// $conector = \PhpConsole\Handler::getInstance();
+
+    	// \PC::debug($content);
 
     	if (Auth::user()) {
-    		return view('Prod.carrito');
+    		return view('prod.carrito', ['content' => $content]);
     	} else {
     		abort(404, 'Debes estar logeado para ver tu carrito de compras');
     	}
     }
 
     public function addShop() {
-
-    	if (!empty($cart)) {
-    		array_push($cart, Session::flash('cart'));
-    	} else {
-    		$cart = Session::flash('cart');
-    	}
+    	Request::session()->push('cart', (int)Request::get('cart'));
+       
+	    return back()->with('status', 'añadido!');
 	    
-	    // return back()->with('status', 'creado!');
-	    echo "<pre>";
-	    print_r($cart);
-	    exit();
     }
+
+    // public function shop() {
+
+    // }
 }

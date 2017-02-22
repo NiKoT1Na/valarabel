@@ -2,6 +2,7 @@
 
 @section('content')
 
+
 <div class="img-header">
 	<a href="{{ url('/products/') }}"> <img src="{{URL::asset('/body/TITLE.png')}}" alt=""> </a>
 </div>
@@ -16,6 +17,7 @@
 		{{" > " . $category}}
 	@endif
 </span>
+
 	
 <div class="columns">
 	<div class="side-menu">
