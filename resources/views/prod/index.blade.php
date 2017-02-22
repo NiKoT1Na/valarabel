@@ -10,13 +10,20 @@
 {{-- <div class="title">
 	productos 
 </div> --}}
-
-<div class="columns">
+<span class="route">
+	@if (!empty($category))
+		<a href="{{ url('/products/') }}"> INDEX &nbsp; </a>
+		{{" > " . $category}}
+	@endif
+</span>
 	
-	@include('partials.tag_filter')
+<div class="columns">
+	<div class="side-menu">
+		@include('partials.category_menu')	
+		@include('partials.tag_filter')
+	</div>
 
 	<div id="subcontainer">
-		
 		@foreach($content as $post)
 			<div class="product">
 				

@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Input;
 // use Illuminate\Auth\Middleware\Authenticate;
 
 use App\Prod;
@@ -43,10 +44,10 @@ class ProdController extends Controller
 	{	
 		$content = Prod::with('tags', 'category')->get();
 		$tags = Tag::all();
-		
+		$categories = Category::all();
     // The current user can update the post...
 		
-			return view('prod.index', ['content' => $content, 'tags' => $tags]);
+			return view('prod.index', ['content' => $content, 'tags' => $tags, 'categories' => $categories]);
 	}
 
 	/**
@@ -69,6 +70,7 @@ class ProdController extends Controller
 		if (empty($tags)) {
 			$tags = Request::get('tag');
 		}
+
 		if ($tags && !is_array($tags)) {
 			$tags = [$tags];
 		}
@@ -115,7 +117,13 @@ class ProdController extends Controller
 		} else if ($category_id) {
 			$result = Prod::where('category_id', '=', $category_id)->with('tags', 'category')->get();
 		}
-		return view('prod.index', ['content' => $result, 'tags' => Tag::all()]);
+			$category_name = false;
+			if(isset($category_id)) { 
+				$category_name = (Category::find($category_id)->name);
+			}
+		$categories = Category::all();
+
+		return view('prod.index', ['content' => $result, 'tags' => Tag::all(), 'category' => $category_name, 'categories' => $categories] );
 	}
 
 	/**

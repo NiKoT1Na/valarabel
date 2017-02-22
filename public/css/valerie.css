@@ -240,3 +240,32 @@ font-weight: bold;
 	max-width: 200px;
 
 }
+.route {
+	display: flex;
+	font-size: .5em;
+	color: #70909D;
+	margin-left: 2em;
+}
+.route a {
+	text-decoration: none;
+	color: #70909D;
+	font-size: 1em;
+}
+
+.category-filter {
+	display: block;
+}
+
+.side-menu {
+	display: block;
+}
+
+a.side-links {
+	display: block;
+	text-decoration: none;
+	color: black;	
+}
+
+a.side-links.current {
+	color: #999;
+}
