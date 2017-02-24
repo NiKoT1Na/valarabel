@@ -1,5 +1,4 @@
-<span class="category">		
-	Categoria
+<span class="category">
 	@if (Route::currentRouteName() === 'tag')
 		<a href="{{ url('tag/' . Request::route('tag') . '/category/' . $post->category->id) }}">{{$post->category->name}}</a>
 	@else

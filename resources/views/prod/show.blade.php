@@ -45,10 +45,14 @@
 	<div class="prod_imagen_grande">
 		<img src="{{ url("images/catalog/$post->file")}}" alt="">
 	</div>		
-	
-	@include('partials.categories')			
+	<div>
+		Categoria	
+		@include('partials.categories')			
+	</div>
 
-	<div class="tags">@include('partials.tags_links')
+	<div class="tags">
+		Etiquetas
+		@include('partials.tags_links')
 	</div>
 	<div class="inv">
 		Cant. {{$post->inv}}			

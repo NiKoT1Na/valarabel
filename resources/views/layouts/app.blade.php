@@ -25,7 +25,7 @@
 		]) !!};
 	</script>    
 </head>
-<body>
+<body class="{{ $body_class or '' }}">
 	<div class="errors">
 		
 	</div>

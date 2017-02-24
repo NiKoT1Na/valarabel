@@ -1,7 +1,4 @@
 <div>
-	<div>
-		Etiquetas
-	</div>
 	@foreach($post->tags as $tag)
 		<span class="tag">
 	@if (Route::currentRouteName() === 'category')

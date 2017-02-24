@@ -167,7 +167,7 @@ class ProdController extends Controller
 			    'category_id' => 'exists:categories,id'	   
 			];
 			$prod = [
-				'user_id' => 1,
+				'user_id' => Auth::id(),
 				'name' => Request::get('name'),
 				'file' => '',
 				'details' => Request::get('details'),
@@ -219,15 +219,10 @@ class ProdController extends Controller
 	public function show($id)
 	{
 		$prod_with_reviews = Prod::with('reviews')->find($id);
-		$rating = $prod_with_reviews->reviews->avg('rating');
 		$reviews = $prod_with_reviews->reviews;
-		
-		function star($rating) {
-			$num = floor($rating * 2);
-			$file_name = $num . 'est.png';
-			return "/body/$file_name";
-		}
-		$star = star($rating);
+		$rating = $reviews->avg('rating');
+		$star = prodStar($id);
+
 		$post = Prod::with('tags', 'category')->find($id);
 		return view('prod.show', ['post' => $post, 'reviews' => $reviews, 'rating' => $rating, 'star' => $star]);
 	}

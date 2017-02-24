@@ -5,6 +5,11 @@ body{
 	background-color: #eeeeee;
 }
 
+
+.carrito table {
+	width: 100%;
+}
+
 .navbar {
 	background-color: #093D42;
 	font-size: 25px;
@@ -169,6 +174,13 @@ font-weight: bold;
     margin: 0.5em 0;
 }
 
+.small img {
+
+	max-width: 200px;
+	max-height: 100px;
+
+/* max-height: 5em; */
+}
 .text {
     height: 3em;
     /* vertical-align: middle; */
@@ -218,6 +230,10 @@ font-weight: bold;
 
 .small-text {
 	font-size: .5em;
+}
+
+.tiny img{
+	max-width: 100px;
 }
 
 .lil-title {
@@ -276,4 +292,16 @@ a.side-links.current {
 .cart {
 	display: flex;
 	flex-direction: column;
+}
+.carrito {
+
+}
+
+.table-tags {
+	max-width: 100px;
+}
+
+.name a {
+	text-decoration: none;
+	color: black;
 }

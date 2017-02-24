@@ -33,3 +33,5 @@ Route::get('carrito', 'CarritoController@compras');
 
 Route::post('added_product', ['uses' => 'CarritoController@addShop', 'as' => 'shopping_cart']);
 
+Route::post('comprar', ['uses' => 'CarritoController@shop', 'as' => 'shopping']);
+
