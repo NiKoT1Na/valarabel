@@ -25,11 +25,12 @@ class ReviewController extends Controller
 	{
 		if (Auth::check()) {
 			$fill = [
-				'user_id' => 1,
+				'user_id' => Auth::id(),
 				'prod_id' => $prod_id,
 				'name' => Request::get('name'),
 				'details' => Request::get('details'),
 				'rating' => Request::get('rating'),
+				'aproved' => 0,
 			];
 
 			$review = new Review($fill);
@@ -41,69 +42,29 @@ class ReviewController extends Controller
 		
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
+	public function aproved(\Illuminate\Http\Request $request)
 	{
-				
-	}
+		if (isAdmin()) {
+			// return $this->newreview()
+			$review_id = Request::get('review_id');
+			$review = Review::find($review_id);
+			$review->aproved = 1;
+			$review->save();
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store(Request $request)
-	{
-		
+			return back()->with('status', 'aprobado!');		
+		}
 	}
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show($id)
+	
+	public function denied()
 	{
-		//
-	}
+		if (isAdmin()) {
+			$id = Request::get('review_id');		
+			$to_delete = Review::find($id);
+			$to_delete->delete();
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, $id)
-	{
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy($id)
-	{
-		//
+			return back()->with('status', 'BORRADO!');	
+		}  else {
+			abort(404, 'debes ser admin para estar aca');
+		}
 	}
 }

@@ -1,5 +1,5 @@
 <div class="tag_filter">
-	<div class="lil-title">Filtra por Etiquetas
+	<div class="lil-title">Explora Etiquetas
 	</div>
 	<div class="small-text">
 			{{Form::open(['route' => ['post_filter'], 'class' => 'tag-selector'])}}

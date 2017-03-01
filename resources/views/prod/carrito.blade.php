@@ -17,8 +17,6 @@
 			<th>Nombre</th>
 			<th>Rating</th>
 			<th>Precio</th>
-			<th>Categoria</th>
-			<th>Etiquetas</th>
 			<th>Cantidad</th>
 		</tr>
 
@@ -55,34 +53,31 @@
 				</td>
 
 				<td>
-					<div>
+					<div class="price">
 						<?php $price = $post->price; ?>
 						${{$price}}
-	    				{!! Form::hidden('price[]', $price) !!}
+	    				{!! Form::hidden("price[$key]", $price) !!}
 					</div>
-				</td>					
-				<td class="table-tags"> 
-					<div>
-						@include('partials.categories')
-					</div>
-				</td>		
-				<td class="table-tags">
-					<div>
-						@include('partials.tags_links')
-					</div>
-				</td>
-				<td>    				
-    				{!! Form::number('amount[]', 'cantidad') !!}
+				</td>									
+				<td class="amount">    				
+    				{!! Form::number("amount[$key]", 1, ['max' => $post->inv, 'min' => 1]) !!}
 				</td>
 		
 			{{-- </div> --}}
 			</tr>
 	@endforeach
+	<tr>
+		<td><h1>TOTAL</h1></td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td class="cart-total">&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr>
 </table>
 
 <div>
 	{!! Form::label('adress', 'direccion') !!}
-	{!! Form::text('adress', null, ['class' => 'form-adress']) !!}
+	{!! Form::text('adress', null,  ['class' => 'form-adress']) !!}
 </div>
 
 <div>
@@ -97,11 +92,29 @@
 	{!! Form::textarea('notes',null, ['class' => 'form-notes']) !!}
 </div>
 <div>
-	<h1>TOTAL</h1>
-	{{"$" . $sum}}
+
 </div>
    	{!! Form::submit('COMPRAR') !!}
 
 {!! Form::close() !!}
+<script>
+
+	$(function () {
+		function calcAndShowTotal () {
+			var total = 0;
+			$('[name="price[]"]').each(function (index, element) {
+				var cantidad = parseInt($('[name="amount[]"]').eq(index).val());
+				var precionUni = parseInt($(element).val());
+				var subtotal = cantidad * precionUni;
+				total += subtotal;			
+			});
+			$('.cart-total').html('$' + total);
+		};
+
+		calcAndShowTotal();
+
+		$('[name="amount[]"]').on('change', calcAndShowTotal);
+	});
+</script>
 @endif
 @endsection

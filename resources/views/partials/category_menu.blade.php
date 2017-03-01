@@ -1,5 +1,5 @@
 <div class="category-filter">
-	<div class="lil-title">Filtra por Etiquetas	</div>
+	<div class="lil-title">Categorias</div>
 	<div class="small-text">
 		@foreach($categories as $one_category)
 			@if (isset($category) && $category === $one_category->name)

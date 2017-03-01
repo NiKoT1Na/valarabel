@@ -42,12 +42,13 @@ class ProdController extends Controller
 
 	public function index()
 	{	
-		$content = Prod::with('tags', 'category')->get();
+		$content = Prod::with('tags', 'category')->paginate(3);
 		$tags = Tag::all();
 		$categories = Category::all();
     // The current user can update the post...
 		
-			return view('prod.index', ['content' => $content, 'tags' => $tags, 'categories' => $categories]);
+		return view('prod.index', 
+			['content' => $content, 'tags' => $tags, 'categories' => $categories]);
 	}
 
 	/**

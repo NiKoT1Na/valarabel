@@ -14,12 +14,19 @@ use App\Category;
 use App\Tag;
 use App\Review;
 use App\Dashboard;
+use App\User;
 
 
 class DashController extends Controller
 {
   	function administrate () {
+  		if (isAdmin()) {
 
- 		
+  			$all_reviews = Review::where('aproved', 0)->with('prod', 'user')->get();  			
+			$posts = "moco";
+  			return view('prod.dashboard', ['posts' => $posts, 'reviews' => $all_reviews]);
+  		} else
+  		return redirect()->route('products.index');
+
  	}
 }
