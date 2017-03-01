@@ -328,7 +328,7 @@ a.side-links.current {
 }
 .cart {
     position: absolute;
-    right: 16px;
+    right: 96px;
     bottom: 0;
 }
 .carrito {
@@ -411,11 +411,12 @@ span.btns {
 }
 
 .cart-selector input[type="submit"] {
-    background: url(body/cart.png) no-repeat center;
+    background: url(../body/cart.png) no-repeat center;
     background-size: cover;
     border: 0;
     height: 3em;
     width: 4em;
+    display: inline-block;
 }
 
 form.cart-selector {
