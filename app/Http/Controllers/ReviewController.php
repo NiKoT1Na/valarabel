@@ -32,7 +32,13 @@ class ReviewController extends Controller
 				'rating' => Request::get('rating'),
 				'aproved' => 0,
 			];
+			$rules = [
+				'name' => 'required',
+				'details' => 'required',
+				'rating' => 'required|numeric|min:1|max:5',
+			];
 
+			$this->validate($request, $rules);
 			$review = new Review($fill);
 			$review->save();
 

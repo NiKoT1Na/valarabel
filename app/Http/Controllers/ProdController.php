@@ -29,6 +29,7 @@ use App\Prod;
 use App\Category;
 use App\Tag;
 use App\Review;
+use App\Images;
 
 
 class ProdController extends Controller
@@ -156,11 +157,12 @@ class ProdController extends Controller
 	public function store(\Illuminate\Http\Request $request, $id = null)
 	{
 		if (isAdmin()) {
-			$model = Prod::findOrNew($id);
+			$model = Prod::findOrNew($id);			
 
 			$rules = [
 			    'name' => 'required',
-			    'file' => 'required|image',
+			    'images.0' => 'image|required',
+			    'images.*' => 'image',
 			    'details' => 'required',
 			    'price' => 'required|numeric',
 			    'inv' => 'required|numeric',
@@ -182,24 +184,32 @@ class ProdController extends Controller
 			}
 			$this->validate($request, $rules, [
 				'required' => 'Este campo es obligatorio!',
-				'numeric' => 'Este campo tiene que ser numerico'
+				'numeric' => 'Este campo tiene que ser numerico', 
+				'image' => 'Este archivo no es una imagen valida'
 			]);
 
 			$model->fill($prod);
 			$model->save();
-			if ($request->hasFile('file')) {
-				if ($model->file) {
-					unlink(base_path() . '/public/images/catalog/' . $model->file);
-				}
-				$ext = $request->file('file')->getClientOriginalExtension();
-				$imageName = $model->id . '_' . time() . '_' . $model->user_id . '.' . $ext;
-				Request::file('file')->move(base_path() . '/public/images/catalog', $imageName);
-		        $model->file = $imageName;
-	        }
+			// if ($request->hasFile('file')) {
+			// 	if ($model->file) {
+			// 		unlink(base_path() . '/public/images/catalog/' . $model->file);
+			// 	}
+			$files = Request::file('images');
+			$allImages = [];
+			foreach ($files as $key => $file) {
+				\PC::debug($file);
+				$ext = $file->getClientOriginalExtension();
+				$imageName = $model->id . '_' . time() . '_' . $model->user_id . '_' . $key . '.' . $ext;
+				$file->move(base_path() . '/public/images/catalog', $imageName);
+				$allImages[] = $imageName;
+
+			}
+			$model->file = json_encode($allImages);
+	        // }
 	        $tag_array = explode(",", Request::get('tags'));
 	        
 	        foreach ($tag_array as $tag_name) {
-	        	$tag_name = ucfirst(strtolower(trim($tag_name)));
+	        	$tag_name = mb_ucfirst(mb_strtolower(trim($tag_name)));
 		        $tag = Tag::firstOrCreate(['name' => $tag_name]);
 		        $model->tags()->attach($tag->id);
 	        }
