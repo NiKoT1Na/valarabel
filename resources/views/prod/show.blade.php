@@ -39,13 +39,12 @@
 	</div>
 	<div class="left-panel">
 	<div class="four-thumbnails">
-		<a class="thumbnail"><img src="http://placehold.it/100x100" alt=""></a>
-		<a class="thumbnail"><img src="http://placehold.it/100x100" alt=""></a>
-		<a class="thumbnail"><img src="http://placehold.it/100x100" alt=""></a>
-		<a class="thumbnail"><img src="http://placehold.it/100x100" alt=""></a>
+		@foreach (json_decode($post->file) as $key => $image)
+				<a class="thumbnail"><img src="{{ url("images/catalog/".$image)}}" alt="" ></a>
+		@endforeach
 	</div>
 		<div class="prod_imagen_grande">
-			<img src="{{ url("images/catalog/$post->file")}}" class="image_to_zoom">
+			<img src="{{ url("images/catalog/".json_decode($post->file)[0])}}" class="image_to_zoom">
 		</div>		
 	</div>
 {{-- 	<div class="inv">
@@ -67,14 +66,15 @@
 	   						{!! Form::submit('Borrar') !!}
 	   					{!! Form::close() !!}
 					</div>
-				@else 
+				@elseif(isAdmin() || Auth::id() === $review->user_id)
 					<div class="small-text">reseña pendiente de aprovacion</div>
 				@endif
 
 			@endforeach
-		@else 
-			<div class="small-text">No hay Reseñas para este producto.</div>
 		@endif	
+		@if ($reviews->where('aproved', 1)->count() === 0)		
+			<div class="small-text">No hay Reseñas para este producto.</div>
+		@endif
 		@if(Auth::check())
 			@include('partials.review_form')
 		@endif
@@ -98,6 +98,18 @@ $(function () {
 		$('.overlay').fadeOut();
 	});
 
+	$('.thumbnail > img').click(function() {
+		$('.image_to_zoom').attr('src', this.src)
+	});
+
+	// [...document.querySelectorAll('img')].forEach(function (ele) {
+	// 	ele.addEventListener('click', function (event) {
+	// 		var imageSrc = this.src; 
+	// 		document.querySelector('.image_to_zoom').setAttribute('src', imageSrc);
+	// 	});
+	// });
+
+
 	// $('.zoomed').mouseleave(function () {
 	// 	$('.overlay').fadeOut();
 	// });
@@ -108,11 +120,15 @@ $(function () {
 
 	$(".image_to_zoom").click(imageZoom);
 	// $(".overlay .zoomed-clone").mouseleave(imageOriginal);
-	$(".new_review").submit(function(){
-		$.post(this.action, $(".new_review").serialize(), function(){
-			
-		});
-	})
+	$(".new_review").submit(function() {
+		// $.post(this.action, $(".new_review").serialize(), function(data){
+			// var url = this.action;
+			// var $sr = $(data).find('.show_reviews');
+			// $(".show_reviews").html(data);
+		// });
+		// return false;		
+	});
+
 
 });
 </script>

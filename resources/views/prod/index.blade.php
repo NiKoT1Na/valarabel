@@ -47,7 +47,7 @@
 				@endif	
 	
 				<div class="prod_imagen">
-					<img src="{{ url("images/catalog/$post->file") }}" alt="">
+					<img src="{{ url("images/catalog/".json_decode($post->file)[0]) }}" alt="">
 				</div>
 				
 				{{-- @include('partials.categories')			 --}}
