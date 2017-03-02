@@ -130,7 +130,7 @@ a:visited {
 }
 
 .text-columns{
-	display: inline-flex;
+	/* display: inline-flex; */
 }
 
 .left-panel {
@@ -142,7 +142,7 @@ a:visited {
 .right-panel {
 	float: right;
 	box-sizing: border-box;
-	max-width: 50%;
+	width: 50%;
 }
 
 /*.image_to_zoom:hover {
@@ -431,4 +431,8 @@ form.cart-selector {
 
 .pagination li {
 	display:inline;
+}
+
+#oneprod .price {
+    display: block;
 }

@@ -228,14 +228,15 @@ class ProdController extends Controller
 	 * @return Response
 	 */
 	public function show($id)
-	{
+	{	
 		$prod_with_reviews = Prod::with('reviews')->find($id);
+		$pendingApproval = !!$prod_with_reviews->reviews->where('user_id', Auth::id())->count();
 		$reviews = $prod_with_reviews->reviews;
-		$rating = $reviews->avg('rating');
+		$rating = $reviews->where('aproved', 1)->avg('rating');
 		$star = prodStar($id);
 
 		$post = Prod::with('tags', 'category')->find($id);
-		return view('prod.show', ['post' => $post, 'reviews' => $reviews, 'rating' => $rating, 'star' => $star]);
+		return view('prod.show', ['post' => $post, 'reviews' => $reviews, 'rating' => $rating, 'star' => $star, 'pendingApproval' => $pendingApproval]);
 	}
 
 	/**

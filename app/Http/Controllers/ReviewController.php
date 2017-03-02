@@ -24,6 +24,10 @@ class ReviewController extends Controller
 	public function newreview(\Illuminate\Http\Request $request, $prod_id)
 	{
 		if (Auth::check()) {
+			$previousReview = Review::where('user_id', Auth::id());
+			if (!empty($previousReview)){
+				$previousReview->delete();
+			}
 			$fill = [
 				'user_id' => Auth::id(),
 				'prod_id' => $prod_id,

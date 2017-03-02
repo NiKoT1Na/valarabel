@@ -23,11 +23,11 @@
 			</span>
 		@endif
 		<div class="text-columns">
-			@if ($rating)
+			{{-- @if ($rating) --}}
 				<div class="score">
 					<img src="{{URL::asset($star)}}" alt="puntaje {{$rating}}" title="{{$rating}}/5">
 				</div>
-			@endif
+			{{-- @endif --}}
 			<div class="price">
 				Precio {{'$'.$post->price}}				
 			</div>
@@ -75,8 +75,8 @@
 		@if ($reviews->where('aproved', 1)->count() === 0)		
 			<div class="small-text">No hay Reseñas para este producto.</div>
 		@endif
-		@if(Auth::check())
-			@include('partials.review_form')
+		@if(Auth::check() && !$pendingApproval)
+			@include('partials.review_form')			
 		@endif
 	</div>
 
@@ -114,19 +114,54 @@ $(function () {
 	// 	$('.overlay').fadeOut();
 	// });
 
-	function imageOriginal(){
-		// $('.overlay').css({'display': 'none'});	
-	}
+	// function imageOriginal(){
+	// 	// $('.overlay').css({'display': 'none'});	
+	// }
 
 	$(".image_to_zoom").click(imageZoom);
-	// $(".overlay .zoomed-clone").mouseleave(imageOriginal);
 	$(".new_review").submit(function() {
-		// $.post(this.action, $(".new_review").serialize(), function(data){
-			// var url = this.action;
-			// var $sr = $(data).find('.show_reviews');
-			// $(".show_reviews").html(data);
-		// });
-		// return false;		
+		$.ajax({
+			type: "POST",
+			url: this.action,
+			data: $(".new_review").serialize(),
+			success: function(data){
+				console.log(data);
+				var $sr = $(data).find('.show_reviews > *');
+				$(".show_reviews").html($sr);
+				$('.new_review').remove();
+				$('.show_reviews .titulo-bonito')
+					.html('Gracias por tu reseña!')
+					.hide().fadeIn(4000);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				$('.single-error').remove();
+				['details', 'rating', 'name'].forEach(function (input, i) {
+					if (jqXHR.responseJSON[input]) {
+						$('<div class="single-error">')
+							.text(jqXHR.responseJSON[input].join(', '))
+							.appendTo('.' + input + '-group');
+					}
+				});
+				// // Iterando arrays de la forma clasica
+				// var array = ['details', 'rating', 'name'];
+				// for (var i = 0; i < array.length; i++) {
+				// 	var input = array[i];
+
+				// }
+				// // Iterando por objetos de la forma clasica
+				// var obj = {name: "Sebas", age: 25};
+
+				// for (var prop in obj) {
+				// 	alert(obj[prop])
+				// }
+
+
+				console.log(jqXHR.responseJSON.details, $('.details-group'))
+				console.log(jqXHR, ' - ', textStatus, ' - ', errorThrown);
+			}
+		});
+
+		return false;		
 	});
 
 

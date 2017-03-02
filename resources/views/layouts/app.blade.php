@@ -20,7 +20,7 @@
 
 	<!-- Scripts -->
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	<script>
+	<script>$.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
 		window.Laravel = {!! json_encode([
 			'csrfToken' => csrf_token(),
 		]) !!};
