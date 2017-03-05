@@ -21,13 +21,11 @@ Route::get('category/{category}', ['uses' => 'ProdController@filter', 'as' => 'c
 
 Route::get('tag/{tag}/category/{category}', ['uses' => 'ProdController@filter', 'as' => 'filter']);
 
-Route::post('filter', ['uses' => 'ProdController@filter', 'as' => 'post_filter']);
+Route::get('filter', ['uses' => 'ProdController@filter', 'as' => 'post_filter']);
 
 Route::post('reviews/{prod_id}', ['uses' => 'ReviewController@newreview', 'as' => 'newreview']);
 
 Route::get('dashboard/{id}', 'DashController@administrate');
-
-Route::get('tags', 'ProdController@tags');
 
 Route::get('carrito', 'CarritoController@compras');
 
@@ -36,5 +34,6 @@ Route::post('added_product', ['uses' => 'CarritoController@addShop', 'as' => 'sh
 Route::post('comprar', ['uses' => 'CarritoController@shop', 'as' => 'shopping']);
 
 Route::post('apr_review', ['uses' => 'ReviewController@aproved', 'as' => 'aproved']);
+
 Route::post('den_review', ['uses' => 'ReviewController@denied', 'as' => 'denied']);
 

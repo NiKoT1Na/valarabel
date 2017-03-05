@@ -2,17 +2,17 @@ body{
 
 	/*font-family: 'Amatic SC', cursive;*/
 	font-family: 'Economica', sans-serif;	font-size: 2em;
-	background-color: #eeeeee;
+	background-color: white;
 }
 
 
 
-.carrito table {
+.prod-carrito table {
 	width: 100%;
 }
 
 .navbar {
-	background-color: #093D42;
+	background-color: #31240C;
 	font-size: 25px;
 	color: white;
 	text-align: right;
@@ -30,21 +30,26 @@ body{
 
 a:link {
 
-	color: #CBDCDD;
+	color: #E1DC53;
+	text-decoration: none;
 }
+
+#app-navbar-collapse a:hover{
+	/*	padding: .2px;
+	margin: 5p*/
+	color: #cea401;
+	}
 
 a:visited {
 
-	color: #CBDCDD;
+	color: #E1DC53;
 }
 
 #subcontainer {
 	display: flex;
 	justify-content: space-between;
 	margin-right: 20px;
-	flex: 2 4 20%;
 	flex-wrap: wrap;
-	align-content: flex-start;
 }
 
 .title{
@@ -99,7 +104,7 @@ a:visited {
 .product .titulo-bonito a {
 
 	display: block;
-	color: #093D42;
+	color: #31240C;
 	text-decoration: none;
 
 }
@@ -117,10 +122,7 @@ a:visited {
 }
 
 .prod_imagen img {
-
-	max-width: 100%;
-
-/* max-height: 5em; */
+	width: 100%;
 }
 
 .prod_imagen_grande img {
@@ -276,6 +278,7 @@ div.overlay > button.close:hover {
 .lil-title {
 	font-size: 1.2em;
 	font-weight: bold;
+	color: #31240C;
 }
 
 .score img {
@@ -294,10 +297,11 @@ div.overlay > button.close:hover {
 
 }
 .route {
-	display: flex;
+	display: block;
 	font-size: .5em;
 	color: #70909D;
 	margin-left: 2em;
+	/* height: 16px; */
 }
 .route a {
 	text-decoration: none;
@@ -316,7 +320,7 @@ div.overlay > button.close:hover {
 a.side-links {
 	display: block;
 	text-decoration: none;
-	color: black;	
+	color: #4B2A08;	
 }
 
 a.side-links.current {
@@ -331,9 +335,6 @@ a.side-links.current {
     right: 96px;
     bottom: 0;
 }
-.carrito {
-
-}
 
 .table-tags {
 	max-width: 100px;
@@ -345,7 +346,7 @@ a.side-links.current {
 }*/
 
 span.price {
-    background: #a5b7b9;
+    background: #E1DC53;
     /* font-weight: normal; */
     color: white;
     border-radius: 20px;
@@ -358,7 +359,7 @@ span.price {
     text-align: center;
     padding: 0 5px;
     position: absolute;
-    right: 62px;
+    right: 21px;
     bottom: 7px;
 }
 
@@ -434,5 +435,24 @@ form.cart-selector {
 }
 
 #oneprod .price {
+    display: block;
+}
+
+.loading-gif-container {
+    margin: 0 auto;
+    margin-top: 15%;
+}
+
+img.loading {
+    /* margin-left: -20px; */
+}
+
+.left-side {
+	flex: 2 4 20%;
+	flex-wrap: wrap;
+	align-content: flex-start
+}
+
+category-selector {
     display: block;
 }

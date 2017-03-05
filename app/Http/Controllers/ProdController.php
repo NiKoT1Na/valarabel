@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Pagination\LengthAwarePaginator;
 // use Illuminate\Auth\Middleware\Authenticate;
 
 use App\Prod;
@@ -35,6 +36,8 @@ use App\Images;
 class ProdController extends Controller
  {
 
+	protected $perPage = 3;
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -43,13 +46,11 @@ class ProdController extends Controller
 
 	public function index()
 	{	
-		$content = Prod::with('tags', 'category')->paginate(3);
-		$tags = Tag::all();
-		$categories = Category::all();
-    // The current user can update the post...
-		
-		return view('prod.index', 
-			['content' => $content, 'tags' => $tags, 'categories' => $categories]);
+		return $this->filter();
+	}
+
+	private function getNonEmptyCategories() {
+		return Category::withCount('Prods')->get()->where('prods_count', '>', 0);
 	}
 
 	/**
@@ -68,64 +69,49 @@ class ProdController extends Controller
 	}
 
 	public function filter() {
-		$tags = Request::route('tag');
-		if (empty($tags)) {
-			$tags = Request::get('tag');
-		}
-
-		if ($tags && !is_array($tags)) {
-			$tags = [$tags];
-		}
 		
-		$category_id = Request::route('category');
-		if (empty($category_id)) {
-			$category_id = Request::get('category_id');
+		$tags = Request::get('tag') ?: Request::route('tag');
+
+		$category_id = Request::route('category') ?: Request::get('category');
+
+		$minPrice = Request::input('minprice') ?: 0;
+		$maxPrice = Request::input('maxprice') ?: PHP_INT_MAX;
+
+		$query = Prod::with('tags', 'category');
+
+		if ($category_id) {
+			$query = $query->where('category_id', $category_id);
 		}
 
 		if ($tags) {
-			$result = Tag::whereIn('id', $tags)->get();
-			$result = $result->map(function ($tag, $key){
-				return $tag->prods()->with('tags', 'category')->get();
-			})->flatten(1)->unique('id');
-
-
-			// // map (...)
-			// $result = [];
-			// foreach ($result as $key => $tag) {
-			// 	$result[$key] = $tag->prods;
-			// }
-			// // flatten(1)
-			// $result_2 = [];
-			// foreach ($result as $key => $r) {
-			// 	if (is_array($r)) {
-			// 		$result_2 = array_merge($result_2, $r);
-			// 	} else {
-			// 		array_push($result_2, $r);
-			// 	}
-			// }
-			// // unique('id')
-			// $result_3 = [];
-			// $ids = [];
-			// foreach ($result as $key => $r) {
-			// 	if (!$ids[$r['id']]) {
-			// 		array_push($result_3, $r);
-			// 	}
-			// }
-
-			if ($category_id) {
-				$result = $result->where('category_id', $category_id);
+			if (!is_array($tags)) {
+				$tags = [$tags];
 			}
-
-		} else if ($category_id) {
-			$result = Prod::where('category_id', '=', $category_id)->with('tags', 'category')->get();
+			$query->whereHas('tags', function ($subquery) use ($tags) {
+				$subquery->whereIn('id', $tags);
+			});
 		}
-			$category_name = false;
-			if(isset($category_id)) { 
-				$category_name = (Category::find($category_id)->name);
-			}
-		$categories = Category::all();
 
-		return view('prod.index', ['content' => $result, 'tags' => Tag::all(), 'category' => $category_name, 'categories' => $categories] );
+		if (Request::has('minprice') || Request::has('maxprice')) {
+			$query = $query->where([
+				['price', '>', intval($minPrice)],
+				['price', '<=', intval($maxPrice)]
+			]);
+		}
+
+		$result = $query->with('tags', 'category')->paginate($this->perPage);
+
+		$params = [
+			'content' => $result,
+			'tags' => Tag::all(),
+			'categories' => $this->getNonEmptyCategories()
+		];
+
+		if(!empty($category_id)) { 
+			$params['category'] = Category::find($category_id)->name;
+		}
+
+		return view('prod.index', $params);
 	}
 
 	/**
@@ -135,8 +121,6 @@ class ProdController extends Controller
 	 */
 	public function create($id = null)
 	{
-		
-
 		if (isAdmin()) {
 			$category_array = Category::all()->pluck('name', 'id');
 			$arguments = ['category_array' => $category_array];
@@ -160,14 +144,14 @@ class ProdController extends Controller
 			$model = Prod::findOrNew($id);			
 
 			$rules = [
-			    'name' => 'required',
-			    'images.0' => 'image|required',
-			    'images.*' => 'image',
-			    'details' => 'required',
-			    'price' => 'required|numeric',
-			    'inv' => 'required|numeric',
-			    'tags' => 'required',
-			    'category_id' => 'exists:categories,id'	   
+				'name' => 'required',
+				'images.0' => 'image|required',
+				'images.*' => 'image',
+				'details' => 'required',
+				'price' => 'required|numeric',
+				'inv' => 'required|numeric',
+				'tags' => 'required',
+				'category_id' => 'exists:categories,id'	   
 			];
 			$prod = [
 				'user_id' => Auth::id(),
@@ -190,29 +174,25 @@ class ProdController extends Controller
 
 			$model->fill($prod);
 			$model->save();
-			// if ($request->hasFile('file')) {
-			// 	if ($model->file) {
-			// 		unlink(base_path() . '/public/images/catalog/' . $model->file);
-			// 	}
+
 			$files = Request::file('images');
 			$allImages = [];
 			foreach ($files as $key => $file) {
-				\PC::debug($file);
 				$ext = $file->getClientOriginalExtension();
 				$imageName = $model->id . '_' . time() . '_' . $model->user_id . '_' . $key . '.' . $ext;
 				$file->move(base_path() . '/public/images/catalog', $imageName);
 				$allImages[] = $imageName;
-
 			}
+
 			$model->file = json_encode($allImages);
-	        // }
-	        $tag_array = explode(",", Request::get('tags'));
-	        
-	        foreach ($tag_array as $tag_name) {
-	        	$tag_name = mb_ucfirst(mb_strtolower(trim($tag_name)));
-		        $tag = Tag::firstOrCreate(['name' => $tag_name]);
-		        $model->tags()->attach($tag->id);
-	        }
+
+			$tag_array = explode(",", Request::get('tags'));
+			
+			foreach ($tag_array as $tag_name) {
+				$tag_name = mb_ucfirst(mb_strtolower(trim($tag_name)));
+				$tag = Tag::firstOrCreate(['name' => $tag_name]);
+				$model->tags()->attach($tag->id);
+			}
 
 			$model->save();
 
@@ -230,7 +210,7 @@ class ProdController extends Controller
 	public function show($id)
 	{	
 		$prod_with_reviews = Prod::with('reviews')->find($id);
-		$pendingApproval = !!$prod_with_reviews->reviews->where('user_id', Auth::id())->count();
+		$pendingApproval = (bool)$prod_with_reviews->reviews->where('user_id', Auth::id())->count();
 		$reviews = $prod_with_reviews->reviews;
 		$rating = $reviews->where('aproved', 1)->avg('rating');
 		$star = prodStar($id);
@@ -262,9 +242,7 @@ class ProdController extends Controller
 	public function update(\Illuminate\Http\Request $request, $id)
 	{
 		// va la validacion de update $_POST
-		// Request::
 		if (isAdmin()) {
-
 			return $this->store($request, $id);			
 		}
 		abort(404, 'Debes estar logeado, para editar tus productos');
@@ -280,9 +258,8 @@ class ProdController extends Controller
 	{
 		if (isAdmin()) {
 			$post_to_delete = Prod::find($id);
-			unlink(base_path() . '/public/images/catalog/'.$post_to_delete->file);
+			unlink(base_path() . '/public/images/catalog/' . $post_to_delete->file);
 			$post_to_delete->delete();
-
 			return redirect()->route('products.index')->with('status', 'Borrado con Exito!!');
 		}
 	}

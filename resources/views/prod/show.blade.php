@@ -34,7 +34,12 @@
 		</div>
 
 		<div class="text">
-			{{$post->details}}										
+			<div class="details-text">
+				{{$post->details}}
+			</div>
+			<div class="tags-text">
+				@include('partials.tags_links')
+			</div>
 		</div>
 	</div>
 	<div class="left-panel">
@@ -86,86 +91,7 @@
 	<button class="close"> X </button>
 </div>
 <script>
-$(function () {
 
-
-	function imageZoom(){
-		$('.zoomed').attr('src', this.src);
-		$('.overlay').fadeIn();
-	}
-
-	$('.overlay > button.close').click(function () {
-		$('.overlay').fadeOut();
-	});
-
-	$('.thumbnail > img').click(function() {
-		$('.image_to_zoom').attr('src', this.src)
-	});
-
-	// [...document.querySelectorAll('img')].forEach(function (ele) {
-	// 	ele.addEventListener('click', function (event) {
-	// 		var imageSrc = this.src; 
-	// 		document.querySelector('.image_to_zoom').setAttribute('src', imageSrc);
-	// 	});
-	// });
-
-
-	// $('.zoomed').mouseleave(function () {
-	// 	$('.overlay').fadeOut();
-	// });
-
-	// function imageOriginal(){
-	// 	// $('.overlay').css({'display': 'none'});	
-	// }
-
-	$(".image_to_zoom").click(imageZoom);
-	$(".new_review").submit(function() {
-		$.ajax({
-			type: "POST",
-			url: this.action,
-			data: $(".new_review").serialize(),
-			success: function(data){
-				console.log(data);
-				var $sr = $(data).find('.show_reviews > *');
-				$(".show_reviews").html($sr);
-				$('.new_review').remove();
-				$('.show_reviews .titulo-bonito')
-					.html('Gracias por tu reseña!')
-					.hide().fadeIn(4000);
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				$('.single-error').remove();
-				['details', 'rating', 'name'].forEach(function (input, i) {
-					if (jqXHR.responseJSON[input]) {
-						$('<div class="single-error">')
-							.text(jqXHR.responseJSON[input].join(', '))
-							.appendTo('.' + input + '-group');
-					}
-				});
-				// // Iterando arrays de la forma clasica
-				// var array = ['details', 'rating', 'name'];
-				// for (var i = 0; i < array.length; i++) {
-				// 	var input = array[i];
-
-				// }
-				// // Iterando por objetos de la forma clasica
-				// var obj = {name: "Sebas", age: 25};
-
-				// for (var prop in obj) {
-				// 	alert(obj[prop])
-				// }
-
-
-				console.log(jqXHR.responseJSON.details, $('.details-group'))
-				console.log(jqXHR, ' - ', textStatus, ' - ', errorThrown);
-			}
-		});
-
-		return false;		
-	});
-
-
-});
 </script>
 
 

@@ -11,22 +11,29 @@
 
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<link rel="shortcut icon" href="{{{ asset('body/favicon.png') }}}">
+	<link rel="shortcut icon" href="{{ asset('body/favicon.png') }}">
 
 	<title>{{ config('app.name', 'Valerie Bisuteria') }}</title>
-
 	<!-- Styles -->
 	{{-- <link href="{{URL::asset('css/app.css')}}" rel="stylesheet" /> --}}
 
 	<!-- Scripts -->
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	<script>$.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
+	<script>
+		var ASSETS_URL = "{{ URL::asset('') }}"
+	</script>
+	<script src="{{ URL::asset('js/functions.js') }}" ></script>
+	<script src="{{ URL::asset("js/views/{$view_name}.js") }}"></script>
+	<script>
+		$.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
+	</script>
+	<script>
 		window.Laravel = {!! json_encode([
 			'csrfToken' => csrf_token(),
 		]) !!};
 	</script>    
 </head>
-<body class="{{ $body_class or '' }}">
+<body class="{{$view_name}} {{ $body_class or '' }}">
 	<div class="errors">
 		
 	</div>
@@ -56,7 +63,7 @@
 				<div class="collapse navbar-collapse" id="app-navbar-collapse">
 					<!-- Left Side Of Navbar -->
 					<span class="center_menu">
-						<a href="{{ url('/products/') }}">INDEX</a>            
+						<a href="{{ url('/products/') }}">INICIO</a>            
 
 						@if (isAdmin()) 
 							<a href="{{ url('/products/create') }}">SUBIR</a>
@@ -64,7 +71,7 @@
 						@endif
 						@if (Auth::guest())
 							<span class="left_menu_bar"><a href="{{ url('/login') }}">Login</a>
-							<a href="{{ url('/register') }}">Register</a></span>
+							<a href="{{ url('/register') }}">Registrate</a></span>
 						@else
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 								{{ Auth::user()->name }} <span class="caret"></span>
@@ -87,11 +94,6 @@
 
 
 					</span>
-
-				   {{--  <ul class="nav navbar-nav">
-						&nbsp;
-					</ul>
- --}}
 					<!-- Right Side Of Navbar -->					
 				</div>
 			</div>            
@@ -102,6 +104,6 @@
 	</div>
 
 	<!-- Scripts -->
-	<script src="{{URL::asset('js/app.js')}}"></script>
+	{{-- <script src="{{URL::asset('js/app.js')}}"></script> --}}
 </body>
 </html>

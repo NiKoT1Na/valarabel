@@ -8,5 +8,6 @@
 				<a class="side-links" href="{{ url('category/' . $one_category->id) }}">  {{$one_category->name}} </a>
 			@endif
 		@endforeach
-		</div>
+	</div>
+	<script src="{{URL::asset('js/category_menu.js')}}"></script>
 </div>

@@ -61,3 +61,12 @@ function mb_ucfirst($str) {
     $fc = mb_strtoupper(mb_substr($str, 0, 1));
     return $fc.mb_substr($str, 1);
 }
+
+function delete_empty_tags() {
+	if (isAdmin()) {
+		Tag::withCount('prods')->get()->where('prods_count', 0)->each(function ($pmodel){
+			$pmodel->delete();
+		});
+	}
+}
+
