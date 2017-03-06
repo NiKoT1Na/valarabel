@@ -138,7 +138,7 @@ class ProdController extends Controller
 	 *
 	 * @return Response
 	 */
-	public function store(\Illuminate\Http\Request $request, $id = null)
+	public function store(\Illuminate\Http\Request $request, Number $id = null)
 	{
 		if (isAdmin()) {
 			$model = Prod::findOrNew($id);			
