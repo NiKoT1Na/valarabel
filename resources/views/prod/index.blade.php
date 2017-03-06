@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="img-header">
-	<a href="{{ url('/products/') }}"> <img src="{{URL::asset('/body/TITLE.png')}}" alt=""> </a>
+	<a href="{{ url('/products/') }}"> <img src="{{URL::asset('/body/TITLE.png')}}" alt="" class="title-image"> </a>
 </div>
 		
 	<div class="columns">

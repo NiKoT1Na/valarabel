@@ -1,9 +1,9 @@
 body{
-
-	/*font-family: 'Amatic SC', cursive;*/
-	font-family: 'Economica', sans-serif;	font-size: 2em;
+	/* font-family: 'Amatic SC', cursive; */
+	font-family: 'Economica', sans-serif;
+	font-size: 2em;
 	background-color: white;
-}
+	}
 
 
 
@@ -294,7 +294,6 @@ div.overlay > button.close:hover {
 }
 .tag_filter {
 	max-width: 200px;
-
 }
 .route {
 	display: block;
@@ -310,7 +309,6 @@ div.overlay > button.close:hover {
 }
 
 .category-filter {
-	display: block;
 }
 
 .side-menu {
@@ -455,4 +453,27 @@ img.loading {
 
 category-selector {
     display: block;
+}
+
+.side-columns {
+    display: flex;
+}
+
+input[type="reset"] {
+}
+
+.filter-title {
+    /* padding: 5px; */
+    text-align: center;
+}
+
+img.title-image {
+    max-width: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+span.center_menu {
+    font-size: .85em;
 }
